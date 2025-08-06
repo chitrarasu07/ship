@@ -1,0 +1,104 @@
+/* nc.module.css */
+
+.container {
+  display: flex; /* Use Flexbox to create a two-column layout */
+  justify-content: space-between; 
+  align-items: center; /* Vertically center the content */
+  padding: 50px 50px;
+  background-color: white;
+  margin-top: 18px;
+  border-radius: 15px;
+}
+
+.container2{
+    background-color: #F6F8FA;
+    padding: 30px 50px;
+}
+.title{
+  color: #00002B;
+  font-size: 25px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+.applyContainer {
+  text-decoration: none; /* This removes the underline */
+  display: flex;
+  align-items: center;
+}
+.apply{
+  font-size: 18px ;
+  color: #1678FB;
+  margin-bottom: 1em;
+}
+.content {
+  /* Add any styles for the main content area */
+}
+
+.content h1{
+    font-size: 35px;
+    font-weight: 600;
+    line-height: 31px;
+    letter-spacing: -0.04em;
+  
+}
+.container2 h1{
+  font-size: 34px;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 33.6px;
+  color: #00002B;
+  margin-top: 10px;
+  margin-bottom: 1em;
+}
+
+.buttonContainer {
+  /* Add any styles for the button container */
+}
+
+.button {
+    font-family: Inter;
+    width: auto;
+    height: 160%; /* Increased height for a slightly larger button */
+    padding: 14px 18px; /* Adjusted padding for a larger button */
+    border-radius: 70px;
+    background: linear-gradient(270deg, #02E1B9 0%, #00ACF6 100%);
+    border: none;
+    color: white;
+    margin-right: 60px;
+    font-size: 18px;
+    font-family: Inter;
+    font-weight: 400;
+    line-height: 24px;
+    letter-spacing: -0.3199999928474426px;
+    text-align: center;
+    margin-top: 20px;
+  
+
+}
+
+.text1{
+    margin-left: 5px;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 20px;
+}
+.textMore{
+  text-align: center;
+  font-size: 18px;
+  line-height: 22px;
+  margin-top: 23px;
+}
+.chatBox{
+  display: flex;
+  align-items: center;
+  margin-top: 35px;
+  justify-content: flex-end;
+  margin-left: 28px;
+}
+/* nc.module.css */
+
+.topLine {
+  width: 100%;
+  height: 3px; /* Adjust the height as needed */
+  background: linear-gradient(240deg, #d3d3d3 0%, #e6e6fa 40%,#d3d3d3 60%, #e6e6fa 100%);/* Change to your desired color */
+}
