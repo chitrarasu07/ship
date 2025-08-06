@@ -1,0 +1,28 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "main": "backend-server.js",
+  "scripts": {
+    "dev": "nodemon",
+    "start": "node backend-server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@fastify/formbody": "^8.0.2",
+    "@fastify/jwt": "^9.1.0",
+    "bcrypt": "^6.0.0",
+    "dotenv": "^17.0.1",
+    "fastify": "^5.4.0",
+    "mysql2": "^3.14.1",
+    "reflect-metadata": "^0.2.2",
+    "rotating-file-stream": "^3.2.6",
+    "typeorm": "^0.3.25"
+  },
+  "devDependencies": {
+    "@fastify/cors": "^11.0.1",
+    "nodemon": "^3.1.10"
+  }
+}
