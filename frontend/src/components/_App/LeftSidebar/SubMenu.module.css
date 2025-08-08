@@ -17,7 +17,6 @@
 .sidebarLink svg {
   fill: #ffffff;
   position: relative;
-  top: 5px;
 }
 
 .sidebarLink:hover {
@@ -80,7 +79,6 @@
 .sidebarLink2 svg {
     fill: #ffffff;
     position: relative;
-    top: 4px;
     margin-right: 8px;
 }
 

@@ -6,7 +6,6 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 
 const SidebarLabel = styled('span')(() => ({
   position: 'relative',
-  top: '-5px',
   color: 'white',
   alignItems: 'center',
   marginTop: '5px'
