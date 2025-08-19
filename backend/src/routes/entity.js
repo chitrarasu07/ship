@@ -25,6 +25,9 @@ module.exports = async function (app) {
         "entity.code",
         "entity.name",
         "entity.status",
+        "entity.imo_number",         // add this
+        "entity.flag",               // add this
+        "entity.cameras_installed",  // add this
         "category1.id",
         "category1.code",
         "category1.name",
@@ -121,6 +124,9 @@ module.exports = async function (app) {
       !validateRequiredFields(req, res, [
         { f: "code", t: "string" },
         { f: "name", t: "string" },
+        { f: "imo_number", t: "string" },           // added
+        { f: "flag", t: "string" },                 // added
+        { f: "cameras_installed", t: "string" },    // added
         { f: "category1_id", t: "number" },
         { f: "category2_id", t: "number" },
         { f: "category3_id", t: "number" },
@@ -129,8 +135,17 @@ module.exports = async function (app) {
       return;
 
     try {
-      const { code, name, comments, category1_id, category2_id, category3_id } =
-        req.body;
+      const {
+        code,
+        name,
+        comments,
+        imo_number,
+        flag,
+        cameras_installed,
+        category1_id,
+        category2_id,
+        category3_id,
+      } = req.body;
 
       // ✅ Check for duplicate code within same org
       const existing = await repo.findOne({
@@ -151,6 +166,9 @@ module.exports = async function (app) {
         code,
         name,
         comments,
+        imo_number,
+        flag,
+        cameras_installed,
         status: "A",
         created_by: { id: req.user.id },
         organization: { id: req.user.orgId },
@@ -165,6 +183,9 @@ module.exports = async function (app) {
         code,
         name,
         comments,
+        imo_number,
+        flag,
+        cameras_installed,
         category1_id,
         category2_id,
         category3_id,
@@ -181,6 +202,9 @@ module.exports = async function (app) {
     if (
       !validateRequiredFields(req, res, [
         { f: "name", t: "string" },
+        { f: "imo_number", t: "string" },           // added
+        { f: "flag", t: "string" },                 // added
+        { f: "cameras_installed", t: "string" },    // added
         { f: "category1_id", t: "number" },
         { f: "category2_id", t: "number" },
         { f: "category3_id", t: "number" },
@@ -190,14 +214,25 @@ module.exports = async function (app) {
 
     try {
       const { id } = req.params;
-      const { name, comments, category1_id, category2_id, category3_id } =
-        req.body;
+      const {
+        name,
+        comments,
+        imo_number,
+        flag,
+        cameras_installed,
+        category1_id,
+        category2_id,
+        category3_id,
+      } = req.body;
 
       await repo.update(
         { id },
         {
           name,
           comments,
+          imo_number,
+          flag,
+          cameras_installed,
           category1: category1_id && { id: category1_id },
           category2: category2_id && { id: category2_id },
           category3: category3_id && { id: category3_id },
@@ -206,6 +241,9 @@ module.exports = async function (app) {
       app.logAudit(req, id, "entity", "update", {
         name,
         comments,
+        imo_number,
+        flag,
+        cameras_installed,
         category1_id,
         category2_id,
         category3_id,
