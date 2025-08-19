@@ -19,7 +19,7 @@ export default function ShipFilters({ onFilterChange }) {
   }, [searchTerm, status, shipType])
 
   return (
-    <div className='space-y-4 space-x-8  '>
+    <div className='space-y-4'>
       <div className='relative'>
         <Search className='absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400' />
         <Input
@@ -29,7 +29,7 @@ export default function ShipFilters({ onFilterChange }) {
           className='pl-10'
         />
       </div>
-      <div className='grid grid-cols-2 gap-2 '>
+      <div className='grid grid-cols-2 gap-2'>
         <Select value={status} onValueChange={setStatus}>
           <SelectTrigger>
             <SelectValue placeholder='Status' />

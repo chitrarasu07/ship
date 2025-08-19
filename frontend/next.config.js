@@ -5,6 +5,7 @@ const nextConfig = {
   experimental: {
     forceSwcTransforms: true
   },
+  devIndicators: false,
   webpack: (config) => {
     config.resolve.fallback = {
       'mongodb-client-encryption': false,

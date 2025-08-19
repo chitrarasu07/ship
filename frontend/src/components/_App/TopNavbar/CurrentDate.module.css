@@ -1,10 +1,10 @@
 .currentDate {
   border: 1px solid #E2E8F0;
-  border-radius: 4px;
+  border-radius: 5px;
   display: flex;
   align-items: center;
   color: var(--primaryColor);
-  padding: 10px 20px 10px 50px;
+  padding: 5px 15px 5px 50px;
   font-weight: 500; 
   font-size: 14px;
   position: relative;

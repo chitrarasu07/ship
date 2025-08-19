@@ -72,7 +72,7 @@ export default function Category3CRUD(props) {
         id: null,
         code: '',
         name: '',
-        sortOrder: 99,
+        sortOrder: 0,
         category1: null,
         category2: null
       })
@@ -156,6 +156,7 @@ export default function Category3CRUD(props) {
             value={formData.code}
             error={errorField.code}
             onChange={handleChange}
+            helperText={errorField.code ? " Code field is Required" : ''}
           />
           <TextField
             required
@@ -165,6 +166,7 @@ export default function Category3CRUD(props) {
             value={formData.name}
             error={errorField.name}
             onChange={handleChange}
+            helperText={errorField.name ? " Name field is Required " : ''}
           />
           <InputTypeNumber
             label='Sort Order'

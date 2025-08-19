@@ -19,7 +19,7 @@ const TopNavbar = ({ toogleActive }) => {
             backgroundColor: '#fff',
             boxShadow: '0px 4px 20px rgba(47, 143, 232, 0.07)',
             py: '6px',
-            mb: '30px',
+            mb: '10px',
             position: 'sticky'
           }}
           className='top-navbar-for-dark'

@@ -4,11 +4,11 @@ import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import {
   BarChart3,
-  Shield,
-  Package,
-  Wrench,
-  Eye,
-  Navigation
+  BellElectric,
+  FireExtinguisher,
+  Flame,
+  Shirt,
+  X,
 } from 'lucide-react'
 
 export default function UseCaseAnalytics({ cameraData }) {
@@ -29,19 +29,24 @@ export default function UseCaseAnalytics({ cameraData }) {
   }, {})
 
   const useCaseIcons = {
-    cargo_monitoring: Package,
-    safety_compliance: Shield,
-    maintenance_inspection: Wrench,
-    security: Eye,
-    navigation_assistance: Navigation
+    // cargo_monitoring: Package,
+    // safety_compliance: Shield,
+    // maintenance_inspection: Wrench,
+    // security: Eye,
+    // navigation_assistance: Navigation
+    Fire_Detection: Flame,
+    Smoke_Detection: FireExtinguisher,
+    PPT_KIT_Detection: Shirt,
+    Anomaly_Detection: BellElectric,
+    No_Cross_Detection: X
   }
 
   const useCaseColors = {
-    cargo_monitoring: 'bg-blue-100 text-blue-800 border-blue-200',
-    safety_compliance: 'bg-green-100 text-green-800 border-green-200',
-    maintenance_inspection: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-    security: 'bg-red-100 text-red-800 border-red-200',
-    navigation_assistance: 'bg-purple-100 text-purple-800 border-purple-200'
+    Fire_Detection: 'bg-blue-100 text-blue-800 border-blue-200',
+    Smoke_Detection: 'bg-green-100 text-green-800 border-green-200',
+    PPT_KIT_Detection: 'bg-yellow-100 text-yellow-800 border-yellow-200',
+    Anomaly_Detection: 'bg-red-100 text-red-800 border-red-200',
+    No_Cross_Detection: 'bg-purple-100 text-purple-800 border-purple-200'
   }
 
   const total = Object.values(useCaseData).reduce(

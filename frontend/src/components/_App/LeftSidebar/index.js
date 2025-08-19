@@ -81,7 +81,7 @@ const Sidebar = ({ toogleActive }) => {
           <SidebarWrap>
             <Box
               sx={{
-                mb: '20px',
+                mb: '10px',
                 px: '20px',
                 display: 'flex',
                 alignItems: 'center',

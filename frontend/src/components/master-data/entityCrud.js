@@ -26,13 +26,22 @@ export default function EntityCRUD(props) {
   const { id, open, handleClose, onSave } = props
   const defaultError = {
     code: false,
-    name: false
+    name: false,
+    imo_number: false,
+    flag: false,
+    cameras_installed: false,
+    category1: false,
+    category2: false,
+    category3: false
   }
   const [formData, setFormData] = useState({
     id: null,
     code: '',
     name: '',
     comments: '',
+    imo_number: '',
+    flag: '',
+    cameras_installed: '',
     category1: null,
     category2: null,
     category3: null
@@ -73,6 +82,9 @@ export default function EntityCRUD(props) {
         code: '',
         name: '',
         comments: '',
+        imo_number: '',
+        flag: '',
+        cameras_installed: '',
         category1: null,
         category2: null,
         category3: null
@@ -98,16 +110,34 @@ export default function EntityCRUD(props) {
   }
 
   const handleSave = async () => {
-    formData.code = formData.code.trim()
-    formData.name = formData.name.trim()
+    formData.code = formData.code.trim();
+    formData.name = formData.name.trim();
     setErrorField({
-      code: !formData.code,
-      name: !formData.name
-    })
-    if (!formData.code || !formData.name) return
+      code: !formData.code ? 'Required field' : '',
+      name: !formData.name ? 'Required field' : '',
+      imo_number: !formData.imo_number ? 'Required field' : '',
+      flag: !formData.flag ? 'Required field' : '',
+      cameras_installed: !formData.cameras_installed ? 'Required field' : '',
+      category1: !formData.category1,
+      category2: !formData.category2,
+      category3: !formData.category3
+    });
+
+    if (
+      !formData.code ||
+      !formData.name ||
+      !formData.imo_number ||
+      !formData.flag ||
+      !formData.cameras_installed ||
+      !formData.category1 ||
+      !formData.category2 ||
+      !formData.category3
+    )
+      return;
 
     setDataSaving(true)
-    setError('this is blocked')
+    
+    // already  writen this i commend this - >  setError('this is blocked')
 
     try {
       const temp = {
@@ -159,6 +189,7 @@ export default function EntityCRUD(props) {
             value={formData.code}
             error={errorField.code}
             onChange={handleChange}
+            helperText={errorField.code}
           />
           <TextField
             required
@@ -168,6 +199,7 @@ export default function EntityCRUD(props) {
             value={formData.name}
             error={errorField.name}
             onChange={handleChange}
+            helperText={errorField.name}
           />
           <TextField
             fullWidth
@@ -177,8 +209,41 @@ export default function EntityCRUD(props) {
             value={formData.comments}
             onChange={handleChange}
           />
+          <TextField
+            required
+            fullWidth
+            label='IMO Number'
+            name='imo_number'
+            value={formData.imo_number}
+            error={!!errorField.imo_number}
+            onChange={handleChange}
+            helperText={errorField.imo_number}
+          />
+          <TextField
+            required
+            fullWidth
+            label='Flag'
+            name='flag'
+            value={formData.flag}
+            error={!!errorField.flag}
+            onChange={handleChange}
+            helperText={errorField.flag}
+          />
+          <TextField
+            required
+            fullWidth
+            label='Cameras Installed'
+            name='cameras_installed'
+            value={formData.cameras_installed}
+            error={!!errorField.cameras_installed}
+            onChange={handleChange}
+            helperText={errorField.cameras_installed}
+          />
           <Category1Autocomplete
             value={formData.category1}
+            InputProps={{
+              error: errorField.category1
+            }}
             AutocompleteProps={{
               onChange: (event, value) => {
                 setFormData({
@@ -186,11 +251,18 @@ export default function EntityCRUD(props) {
                   category1: value,
                   category2: null
                 })
+                setErrorField((prev) => ({
+                  ...prev,
+                  category1: value ? '' : 'Required field'
+                }))
               }
             }}
           />
           <Category2Autocomplete
             value={formData.category2}
+            InputProps={{
+              error: errorField.category2
+            }}
             category1_id={formData.category1?.id || null}
             AutocompleteProps={{
               onChange: (event, value) => {
@@ -199,11 +271,18 @@ export default function EntityCRUD(props) {
                   category2: value,
                   category1: value?.category1 || null
                 })
+                setErrorField((prev) => ({
+                  ...prev,
+                  category2: value ? '' : 'Required field'
+                }))
               }
             }}
           />
           <Category3Autocomplete
             value={formData.category3}
+            InputProps={{
+              error: errorField.category3
+            }}
             category1_id={formData.category1?.id || null}
             category2_id={formData.category2?.id || null}
             AutocompleteProps={{
@@ -213,6 +292,10 @@ export default function EntityCRUD(props) {
                   category3: value,
                   category2: value?.category2 || null,
                   category1: value?.category1 || null
+                })
+                setErrorField({
+                  ...errorField,
+                  category3: value 
                 })
               }
             }}

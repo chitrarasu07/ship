@@ -91,6 +91,7 @@ export default function Category2Autocomplete(props) {
       renderInput={(params) => (
         <TextField
           {...params}
+          error={props.error}
           label={org.category2}
           {...props.TextFieldProps}
           autoComplete='off'
