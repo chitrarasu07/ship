@@ -152,7 +152,7 @@ export default function User() {
           <Grid item sm={6} md={2}>
             <TextField
               fullWidth
-              label='Name'
+              label='Caption Name'
               name='name'
               value={searchData.name}
               onChange={handleSearchChange}
@@ -222,7 +222,7 @@ export default function User() {
               <TableRow>
                 <TableCell>SN.No</TableCell>
                 <TableCell>Code</TableCell>
-                <TableCell>Name</TableCell>
+                <TableCell>Caption Name</TableCell>
                 <TableCell>Email ID</TableCell>
                 <TableCell>Role</TableCell>
                 <TableCell>Status</TableCell>

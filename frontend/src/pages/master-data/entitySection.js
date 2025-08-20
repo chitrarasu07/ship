@@ -150,7 +150,7 @@ export default function EntitySection() {
             <TextField
               autoFocus
               fullWidth
-              label='Code'
+              label='Deck Code'
               name='code'
               value={searchData.code}
               onChange={handleSearchChange}
@@ -159,7 +159,7 @@ export default function EntitySection() {
           <Grid item sm={6} md={2}>
             <TextField
               fullWidth
-              label='Name'
+              label='Deck Name'
               name='name'
               value={searchData.name}
               onChange={handleSearchChange}
@@ -241,10 +241,11 @@ export default function EntitySection() {
             <TableHead>
               <TableRow>
                 <TableCell>SN.No</TableCell>
-                <TableCell>Code</TableCell>
-                <TableCell>Name</TableCell>
+                <TableCell>Deck Code</TableCell>
+                <TableCell>Deck Name</TableCell>
                 <TableCell>Status</TableCell>
                 <TableCell>{org.entity}</TableCell>
+                <TableCell>Cameras Installed</TableCell>
                 <TableCell></TableCell>
               </TableRow>
             </TableHead>
@@ -263,6 +264,7 @@ export default function EntitySection() {
                   <TableCell>
                     {row.entity && `${row.entity.name} (${row.entity.code})`}
                   </TableCell>
+                  <TableCell>{row.cameras_installed}</TableCell>
                   <TableCell>
                     <Button
                       onClick={() => setDeleteRow(row)}

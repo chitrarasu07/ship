@@ -31,6 +31,7 @@ export default function EntitySectionCRUD(props) {
     code: '',
     name: '',
     comments: '',
+    cameras_installed: 0,
     entity: null
   })
   const [errorField, setErrorField] = useState(defaultError)
@@ -49,7 +50,9 @@ export default function EntitySectionCRUD(props) {
           if (savedDate) {
             setFormData({
               ...formData,
-              ...savedDate
+              ...savedDate,
+              // added for cameras_installed
+              cameras_installed: savedDate.cameras_installed ?? 0
             })
           } else {
             setError('Data not found in the DB')
@@ -81,6 +84,7 @@ export default function EntitySectionCRUD(props) {
   const handleChange = (event) => {
     let { name, value, checked, type } = event.target
     if (name === 'code' && value) value = value.toUpperCase()
+    if (name === 'cameras_installed') value = Number(value)
     setFormData({
       ...formData,
       [name]: type == 'checkbox' ? checked : value
@@ -173,6 +177,15 @@ export default function EntitySectionCRUD(props) {
             name='comments'
             label='Comments'
             value={formData.comments}
+            onChange={handleChange}
+          />
+          <TextField
+            label='Cameras Installed'
+            fullWidth
+            type='number'
+            name='cameras_installed'
+            inputProps={{ min: 0 }}
+            value={formData.cameras_installed}
             onChange={handleChange}
           />
           <EntityAutocomplete

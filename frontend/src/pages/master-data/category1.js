@@ -154,7 +154,7 @@ export default function Category1() {
           <Grid item sm={6} md={2}>
             <TextField
               fullWidth
-              label='Name'
+              label='Ship Type'
               name='name'
               value={searchData.name}
               onChange={handleSearchChange}
@@ -224,7 +224,7 @@ export default function Category1() {
               <TableRow>
                 <TableCell>SN.No</TableCell>
                 <TableCell>Code</TableCell>
-                <TableCell>Name</TableCell>
+                <TableCell>Ship Type</TableCell>
                 <TableCell>Status</TableCell>
                 <TableCell></TableCell>
               </TableRow>

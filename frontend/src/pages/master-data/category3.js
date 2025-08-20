@@ -262,7 +262,7 @@ export default function Category3() {
               <TableRow>
                 <TableCell>SN.No</TableCell>
                 <TableCell>Code</TableCell>
-                <TableCell>Name</TableCell>
+                <TableCell>Port Name</TableCell>
                 <TableCell>Status</TableCell>
                 <TableCell>{org.category2}</TableCell>
                 <TableCell>{org.category1}</TableCell>

@@ -263,9 +263,12 @@ export default function Entity() {
                 <TableCell>Code</TableCell>
                 <TableCell>Name</TableCell>
                 <TableCell>Status</TableCell>
-                <TableCell>{org.category3}</TableCell>
-                <TableCell>{org.category2}</TableCell>
+                <TableCell>IMO Number</TableCell>
+                <TableCell>Flag</TableCell>
+                <TableCell>Cameras Installed</TableCell>
                 <TableCell>{org.category1}</TableCell>
+                <TableCell>{org.category2}</TableCell>
+                <TableCell>{org.category3}</TableCell>
                 <TableCell></TableCell>
               </TableRow>
             </TableHead>
@@ -281,17 +284,20 @@ export default function Entity() {
                   <TableCell>{row.code}</TableCell>
                   <TableCell>{row.name}</TableCell>
                   <TableCell>{row.status}</TableCell>
+                  <TableCell>{row.imo_number}</TableCell>
+                  <TableCell>{row.flag}</TableCell>
+                  <TableCell>{row.cameras_installed}</TableCell>
                   <TableCell>
-                    {row.category3 &&
-                      `${row.category3.name} (${row.category3.code})`}
+                    {row.category1 &&
+                      `${row.category1.name} (${row.category1.code})`}
                   </TableCell>
                   <TableCell>
                     {row.category2 &&
                       `${row.category2.name} (${row.category2.code})`}
                   </TableCell>
                   <TableCell>
-                    {row.category1 &&
-                      `${row.category1.name} (${row.category1.code})`}
+                    {row.category3 &&
+                      `${row.category3.name} (${row.category3.code})`}
                   </TableCell>
                   <TableCell>
                     <Button

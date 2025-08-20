@@ -5,7 +5,7 @@ module.exports = async function (app) {
 
   app.get("/entity-section", async (req, res) => {
     try {
-      const { id, code, name, codeOrName, isActive, getCount, entity_id } =
+      const { id, code, name, codeOrName, isActive, getCount, entity_id , cameras_installed} =
         req.query;
 
       const qb = repo.createQueryBuilder("entitySection");
@@ -16,6 +16,7 @@ module.exports = async function (app) {
         "entitySection.code",
         "entitySection.name",
         "entitySection.status",
+        "entitySection.cameras_installed",
         "entity.id",
         "entity.code",
         "entity.name",
@@ -98,7 +99,7 @@ module.exports = async function (app) {
       return;
 
     try {
-      const { code, name, comments, entity_id } = req.body;
+      const { code, name, comments, entity_id, cameras_installed } = req.body;
 
       // ✅ Check for duplicate code within same org
       const existing = await repo.findOne({
@@ -120,6 +121,7 @@ module.exports = async function (app) {
         name,
         comments,
         status: "A",
+        cameras_installed,
         created_by: { id: req.user.id },
         organization: { id: req.user.orgId },
         entity: { id: entity_id },
@@ -132,6 +134,7 @@ module.exports = async function (app) {
         name,
         comments,
         entity_id,
+        cameras_installed,
       });
 
       res.send({ success: true, id: saved.id });
@@ -152,19 +155,21 @@ module.exports = async function (app) {
 
     try {
       const { id } = req.params;
-      const { name, comments, entity_id } = req.body;
+      const { name, comments, entity_id, cameras_installed } = req.body;
 
       await repo.update(
         { id },
         {
           name,
           comments,
+          cameras_installed,
           entity: { id: entity_id },
         }
       );
       app.logAudit(req, id, "entity-section", "update", {
         name,
         comments,
+        cameras_installed,
         entity_id,
       });
       res.send({ success: true });

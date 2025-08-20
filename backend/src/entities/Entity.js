@@ -17,6 +17,9 @@ module.exports = new EntitySchema({
     ref_number: { type: "varchar", nullable: true },
     category4: { type: "varchar", nullable: true },
     category5: { type: "varchar", nullable: true },
+    imo_number: { type: "varchar", nullable: false }, // added
+    flag: { type: "varchar", nullable: false },       // added
+    cameras_installed: { type: "varchar", nullable: false }, // added
     ...commonColumns,
   },
   relations: {
@@ -49,5 +52,8 @@ module.exports = new EntitySchema({
     { name: "IDX_CATE1", columns: ["category1"] },
     { name: "IDX_CATE2", columns: ["category2"] },
     { name: "IDX_CATE3", columns: ["category3"] },
+    { name: "IDX_IMO", columns: ["imo_number"] }, // added index
+    { name: "IDX_FLAG", columns: ["flag"] },      // added index
+    { name: "IDX_CAMERAS", columns: ["cameras_installed"] }, // added index
   ],
 });

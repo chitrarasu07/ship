@@ -14,6 +14,7 @@ module.exports = new EntitySchema({
     code: { type: "varchar", nullable: false },
     name: { type: "varchar", nullable: false },
     comments: { type: "varchar" },
+    cameras_installed:{ type: "int", nullable: true, default: 0 },
     ...commonColumns,
   },
   relations: {

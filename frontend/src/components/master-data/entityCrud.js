@@ -241,6 +241,7 @@ export default function EntityCRUD(props) {
           />
           <Category1Autocomplete
             value={formData.category1}
+            // .................... this code is for show errors in that field..............//
             InputProps={{
               error: errorField.category1
             }}

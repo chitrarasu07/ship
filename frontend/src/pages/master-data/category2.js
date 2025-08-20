@@ -158,7 +158,7 @@ export default function Category2() {
           <Grid item sm={6} md={2}>
             <TextField
               fullWidth
-              label='Name'
+              label='City Name'
               name='name'
               value={searchData.name}
               onChange={handleSearchChange}
@@ -241,7 +241,7 @@ export default function Category2() {
               <TableRow>
                 <TableCell>SN.No</TableCell>
                 <TableCell>Code</TableCell>
-                <TableCell>Name</TableCell>
+                <TableCell>City Name</TableCell>
                 <TableCell>Status</TableCell>
                 <TableCell>{org.category1}</TableCell>
                 <TableCell></TableCell>

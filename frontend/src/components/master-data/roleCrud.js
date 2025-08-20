@@ -186,7 +186,7 @@ export default function RoleCRUD(props) {
           />
           <TextField
             required
-            label='Name'
+            label='Role Name'
             fullWidth
             name='name'
             value={formData.name}

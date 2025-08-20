@@ -152,7 +152,7 @@ export default function Role() {
           <Grid item sm={6} md={2}>
             <TextField
               fullWidth
-              label='Name'
+              label='Role Name'
               name='name'
               value={searchData.name}
               onChange={handleSearchChange}
@@ -222,7 +222,7 @@ export default function Role() {
               <TableRow>
                 <TableCell>SN.No</TableCell>
                 <TableCell>Code</TableCell>
-                <TableCell>Name</TableCell>
+                <TableCell>Role Name</TableCell>
                 <TableCell>Landing Page</TableCell>
                 <TableCell>Status</TableCell>
                 <TableCell></TableCell>
