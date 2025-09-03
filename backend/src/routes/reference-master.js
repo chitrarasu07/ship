@@ -6,8 +6,16 @@ module.exports = async function (app) {
 
   app.get("/reference-master", async (req, res) => {
     try {
-      const { id, code, name, codeOrName, isActive, getCount, getRefValues } =
-        req.query;
+      const {
+        id,
+        code,
+        name,
+        codeOrName,
+        isActive,
+        getCount,
+        getRefValues,
+        entity_id,
+      } = req.query;
       const qb = repo.createQueryBuilder("reference_master");
       const dataToSend = {};
       qb.select([
@@ -16,6 +24,9 @@ module.exports = async function (app) {
         "reference_master.name",
         "reference_master.status",
         "reference_master.description",
+        "entity.id",
+        "entity.code",
+        "entity.name",
       ]);
 
       qb.where("reference_master.org_id = :orgId", {
@@ -46,6 +57,12 @@ module.exports = async function (app) {
         );
       }
 
+      if (entity_id) {
+        qb.andWhere("entitySection.entity_id = :entityId", {
+          entityId: entity_id,
+        });
+      }
+
       if (isActive === "false") {
         qb.andWhere("reference_master.status IN (:...status)", {
           status: ["A", "D"],
@@ -70,6 +87,8 @@ module.exports = async function (app) {
         dataToSend.referenceValues = referenceValues;
       }
 
+      qb.leftJoin("reference_master.entity", "entity");
+
       const page = parseInt(req.query.pageNo) || 1;
       const limit = parseInt(req.query.limit) || 10;
       const offset = (page - 1) * limit;
@@ -92,84 +111,84 @@ module.exports = async function (app) {
         { f: "code", t: "string" },
         { f: "name", t: "string" },
         { f: "referenceValues", t: "array" },
+        { f: "entity_id", t: "number" },
       ])
     )
       return;
 
     try {
       const conn = app.db; // TypeORM DataSource
-      const { code, name, referenceValues, description } = req.body;
+      const { code, name, referenceValues, description, entity_id } = req.body;
 
-      await conn
-        .transaction(async (manager) => {
-          // Check for duplicate reference_master code
-          const existing = await manager.findOne("ReferenceMaster", {
-            where: {
-              code,
-              organization: { id: req.user.orgId },
-              status: "A",
-            },
-          });
+      // Check for duplicate reference_master code
+      const existing = await repo.findOne("ReferenceMaster", {
+        where: {
+          code,
+          organization: { id: req.user.orgId },
+          status: "A",
+        },
+      });
 
-          if (existing) {
-            return res
-              .code(400)
-              .send({ error: `Code "${code}" already exists.` });
-          }
+      if (existing) {
+        return res.code(400).send({ error: `Code "${code}" already exists.` });
+      }
 
-          // Create new reference_master
-          const refMasterRepo = manager.getRepository("ReferenceMaster");
-          const reference_master = refMasterRepo.create({
-            code,
-            name,
+      // Create new reference_master
+      // const refMasterRepo = manager.getRepository("ReferenceMaster");
+      // const reference_master = refMasterRepo.create({
+      //   code,
+      //   name,
+      //   status: "A",
+      //   description,
+      //   created_by: { id: req.user.id },
+      //   organization: { id: req.user.orgId },
+      // });
+
+      // const savedRefMaster = await refMasterRepo.save(reference_master);
+
+      const payload = repo.create({
+        code,
+        name,
+        comments,
+        status: "A",
+        cameras_installed,
+        created_by: { id: req.user.id },
+        organization: { id: req.user.orgId },
+        entity: { id: entity_id },
+      });
+
+      const saved = await repo.save(payload);
+
+      // Create related referenceValues if provided
+      if (Array.isArray(referenceValues)) {
+        const permRepoTx = manager.getRepository("ReferenceValue");
+        const permissionEntities = referenceValues.map((rv) =>
+          permRepoTx.create({
+            code: rv.code,
+            name: rv.name,
+            isActive: rv.isActive,
+            description: rv.description,
+            relatedValue: rv.relatedValue,
+            sortOrder: rv.sortOrder,
             status: "A",
-            description,
+            reference_master: { id: savedRefMaster.id },
             created_by: { id: req.user.id },
             organization: { id: req.user.orgId },
-          });
+          })
+        );
+        await permRepoTx.save(permissionEntities);
+      }
 
-          const savedRefMaster = await refMasterRepo.save(reference_master);
+      // Log audit entry
+      app.logAudit(req, payload.id, "reference_masters", "create", {
+        code,
+        name,
+        description,
+        entity_id,
+        referenceValues,
+      });
 
-          // Create related referenceValues if provided
-          if (Array.isArray(referenceValues)) {
-            const permRepoTx = manager.getRepository("ReferenceValue");
-            const permissionEntities = referenceValues.map((rv) =>
-              permRepoTx.create({
-                code: rv.code,
-                name: rv.name,
-                isActive: rv.isActive,
-                description: rv.description,
-                relatedValue: rv.relatedValue,
-                sortOrder: rv.sortOrder,
-                status: "A",
-                reference_master: { id: savedRefMaster.id },
-                created_by: { id: req.user.id },
-                organization: { id: req.user.orgId },
-              })
-            );
-            await permRepoTx.save(permissionEntities);
-          }
-
-          // Log audit entry
-          await app.logAudit(
-            req,
-            savedRefMaster.id,
-            "reference_masters",
-            "create",
-            {
-              code,
-              name,
-              description,
-              referenceValues,
-            }
-          );
-
-          res.send({ success: true, id: savedRefMaster.id });
-        })
-        .catch((err) => {
-          app.log.error(err);
-          res.code(500).send({ error: "Transaction failed" });
-        });
+      res.send({ success: true, id: saved.id });
     } catch (err) {
       app.log.error(err);
       res.code(500).send({ error: "Internal error" });
@@ -181,21 +200,22 @@ module.exports = async function (app) {
       !validateRequiredFields(req, res, [
         { f: "name", t: "string" },
         { f: "referenceValues", t: "array" },
+        { f: "entity_id", t: "number" },
       ])
     )
       return;
 
-    const { id } = req.params;
-    const { name, referenceValues, description } = req.body;
-    const conn = app.db;
-
     try {
-      await conn.transaction(async (manager) => {
-        // 🧩 Update the reference_master
-        await manager.update("ReferenceMaster", { id }, { name, description });
+      const { id } = req.params;
+      const { name, referenceValues, description, entity_id } = req.body;
+        // Update parent reference_master fields
+        await repo.update({ id }, { name, description , entity: { id: entity_id } });
+
+        // Handle child referenceValues entities
+        const refValueRepo = app.db.getRepository("ReferenceValue");
 
         // 🔎 Fetch existing referenceValues for this reference_master
-        const existing = await manager.find("ReferenceValue", {
+        const existingReferenceValues = await refValueRepo.find( {
           where: {
             status: "A",
             reference_master: { id },
@@ -203,48 +223,59 @@ module.exports = async function (app) {
           },
         });
 
-        const existingPagesMap = new Map();
-        for (const p of existing) {
-          existingPagesMap.set(p.id, p);
-        }
+      // Map existing data by ID for easy lookups
+    const existingMap = new Map(existingReferenceValues.map(rv => [rv.id, rv]));
 
-        // 🔄 Upsert referenceValues
-        for (const rv of referenceValues) {
-          const match = existingPagesMap.get(rv.id);
-          if (!match) {
-            const permRepoTx = manager.getRepository("ReferenceValue");
-            const newPerm = permRepoTx.create({
-              code: rv.code,
-              name: rv.name,
-              isActive: rv.isActive,
-              description: rv.description,
-              relatedValue: rv.relatedValue,
-              sortOrder: rv.sortOrder,
-              reference_master: { id },
-              organization: { id: req.user.orgId },
-              created_by: { id: req.user.id },
-              status: "A",
-            });
-            await permRepoTx.save(newPerm);
-          } else if (match.status === "D") {
-            match.code = rv.code;
-            match.name = rv.name;
-            match.isActive = rv.isActive;
-            match.description = rv.description;
-            match.relatedValue = rv.relatedValue;
-            match.sortOrder = rv.sortOrder;
-            await manager.save("ReferenceValue", match);
-          }
-        }
+    // IDs present in incoming payload
+    const incomingIds = referenceValues.map(rv => rv.id).filter(Boolean);
 
-        await app.logAudit(req, id, "reference_masters", "update", {
+       // 3. Update existing or add new reference values
+    for (const rv of referenceValues) {
+      if (rv.id && existingMap.has(rv.id)) {
+        // Update existing record
+        const existing = existingMap.get(rv.id);
+        existing.code = rv.code;
+        existing.name = rv.name;
+        existing.isActive = rv.isActive;
+        existing.description = rv.description;
+        existing.relatedValue = rv.relatedValue;
+        existing.sortOrder = rv.sortOrder;
+
+        await refValueRepo.save(existing);
+      } else {
+        // Add new record
+        const newRefValue = refValueRepo.create({
+          code: rv.code,
+          name: rv.name,
+          isActive: rv.isActive,
+          description: rv.description,
+          relatedValue: rv.relatedValue,
+          sortOrder: rv.sortOrder,
+          reference_master: { id },
+          organization: { id: req.user.orgId },
+          created_by: { id: req.user.id },
+          status: "A",
+        });
+        await refValueRepo.save(newRefValue);
+      }
+    }
+
+    // 4. Soft-delete reference values not included in the update payload
+    for (const oldRef of existingReferenceValues) {
+      if (!incomingIds.includes(oldRef.id)) {
+        oldRef.status = "D";
+        await refValueRepo.save(oldRef);
+      }
+    }
+
+        app.logAudit(req, id, "reference_masters", "update", {
           name,
           referenceValues,
           description,
+          entity_id,
         });
 
         res.send({ success: true });
-      });
     } catch (err) {
       app.log.error(err);
       res.code(500).send({ error: "Internal error" });

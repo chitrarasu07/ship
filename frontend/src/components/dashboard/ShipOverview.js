@@ -84,7 +84,8 @@ export default function ShipOverview({ ships, detailed = false }) {
                   </p>
                   {detailed && (
                     <p className='text-xs text-slate-400'>
-                      {ship.cameras_installed || 0} cameras • {ship.ship_type}
+                      {/* i change cameras_installed -> camera_installed */}
+                      {ship.camera_installed || 0} cameras • {ship.ship_type}
                     </p>
                   )}
                 </div>

@@ -15,6 +15,8 @@ import {
   Report,
   Sailing
 } from '@mui/icons-material'
+import CameraAltIcon from '@mui/icons-material/CameraAlt'
+
 
 export const getMenuData = (org) => [
   {
@@ -86,10 +88,17 @@ export const getMenuData = (org) => [
         permissions: ['entity-section']
       },
       {
-        title: 'Reference Master',
+        // title: 'Reference Master',
+        title:'Ship Status',
         path: '/master-data/referenceMaster',
         icon: <SpokeIcon />,
         permissions: ['reference-master']
+      },
+      {
+        title: 'Camera',
+        path: '/master-data/camera',
+        icon: <CameraAltIcon/>,
+        permissions: ['camera']
       }
     ]
   },

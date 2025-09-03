@@ -269,7 +269,7 @@ export default function Entity() {
                 <TableCell>{org.category1}</TableCell>
                 <TableCell>{org.category2}</TableCell>
                 <TableCell>{org.category3}</TableCell>
-                <TableCell></TableCell>
+                <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>

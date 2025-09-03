@@ -23,11 +23,12 @@ const SidebarNav = styled('nav')(({ theme }) => ({
   left: 0,
   transition: '350ms',
   zIndex: '10',
-  overflowY: 'auto'
+  overflowY: 'auto',
+  scrollBehavior: 'smooth'
 }))
 
 const SidebarWrap = styled('div')(({ theme }) => ({
-  width: '100%'
+  width: '100%',
 }))
 
 const Sidebar = ({ toogleActive }) => {
@@ -85,7 +86,7 @@ const Sidebar = ({ toogleActive }) => {
                 px: '20px',
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'space-between'
+                justifyContent: 'space-between',
               }}
             >
               <Link href='/'>

@@ -9,6 +9,7 @@ const category3Routes = require("./category3");
 const notificationRoutes = require("./notification");
 const entitySectionRoutes = require("./entity-section");
 const referenceMasterRoutes = require("./reference-master");
+const cameraRouters = require("./camera");
 
 async function routes(app, opts) {
   await app.register(authRoutes);
@@ -22,6 +23,7 @@ async function routes(app, opts) {
   await app.register(notificationRoutes);
   await app.register(entitySectionRoutes);
   await app.register(referenceMasterRoutes);
+  await app.register(cameraRouters);
 }
 
 module.exports = routes;

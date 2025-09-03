@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { format } from 'date-fns'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { AlertTriangle, Clock, MapPin, Eye } from 'lucide-react'
+import { AlertTriangle, Clock, MapPin, Eye, ShipIcon } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { motion } from 'framer-motion'
 
 export default function RecentAlerts({ alerts }) {
   const severityColors = {
@@ -21,6 +22,9 @@ export default function RecentAlerts({ alerts }) {
     medium: <AlertTriangle className='w-3 h-3' />,
     low: <AlertTriangle className='w-3 h-3' />
   }
+  // this is added for show more/less functionality
+  const [showAll, setShowAll] = useState(false)
+  const visibleAlerts = showAll ? alerts : alerts.slice(0, 4)
 
   return (
     <Card>
@@ -41,7 +45,8 @@ export default function RecentAlerts({ alerts }) {
               <p className='text-gray-500'>No active alerts</p>
             </div>
           ) : (
-            alerts.slice(0, 10).map((alert) => (
+            // alerts.slice(0, 10).map((alert) => (
+            visibleAlerts.map((alert) => (
               <div
                 key={alert.id}
                 className='flex items-start gap-3 p-3 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors'
@@ -54,8 +59,21 @@ export default function RecentAlerts({ alerts }) {
                         severityColors[alert.severity]
                       } border flex items-center gap-1`}
                     >
-                      {severityIcons[alert.severity]}
-                      {alert.severity}
+                      {alert.severity === 'emergency' ? (
+                        <motion.span
+                          animate={{ scale: [1, 1.1, 1] }}
+                          transition={{ duration: 0.6, repeat: Infinity }}
+                          className='flex items-center gap-1'
+                        >
+                          {severityIcons[alert.severity]}
+                          {alert.severity}
+                        </motion.span>
+                      ) : (
+                        <>
+                          {severityIcons[alert.severity]}
+                          {alert.severity}
+                        </>
+                      )}
                     </Badge>
                     <span className='text-xs text-slate-500 flex items-center gap-1'>
                       <Clock className='w-3 h-3' />
@@ -68,6 +86,9 @@ export default function RecentAlerts({ alerts }) {
                   <p className='text-xs text-slate-500 line-clamp-2'>
                     {alert.description}
                   </p>
+                  <p className="flex items-center gap-1">
+                        <ShipIcon className="w-3 h-3" /> {alert.shipName}
+                    </p>
                   {alert.location && (
                     <p className='text-xs text-slate-400 flex items-center gap-1 mt-1'>
                       <MapPin className='w-3 h-3' />
@@ -84,6 +105,19 @@ export default function RecentAlerts({ alerts }) {
                 </Button>
               </div>
             ))
+          )}
+          {/* Show more/less button */}
+          {alerts.length > 4 && (
+            <div className='text-center pt-1'>
+              <Button
+                variant='outline'
+                size='sm'
+                className='text-blue-500 border-blue-500 hover:text-white-100 bg-grey-300 p-1 cursor-pointer'
+                onClick={() => setShowAll(!showAll)}
+              >
+                {showAll ? 'View Less' : `View More (${alerts.length - 4})`}
+              </Button>
+            </div>
           )}
         </div>
       </CardContent>

@@ -14,41 +14,187 @@ import {
 import DashboardStats from '../components/dashboard/DashboardStats'
 import ShipOverview from '../components/dashboard/ShipOverview'
 import RecentAlerts from '../components/dashboard/RecentAlerts'
-import CameraMetrics from '../components/dashboard/CameraMetrics'
 import GlobalMap from '../components/dashboard/GlobalMap'
-import UseCaseAnalytics from '../components/dashboard/UseCaseAnalytics'
+import UseCaseAnalytics from '@/components/dashboard/UseCaseAnalytics'
+import IncidentResponseMetrics from '../components/dashboard/IncidentResponseMatrics'
+import axios from 'axios'
+
 
 export default function Dashboard() {
   const [ships, setShips] = useState([])
-  const [alerts, setAlerts] = useState([])
-  const [cameraData, setCameraData] = useState([])
+  // const [alerts, setAlerts] = useState([])
+  // const [cameraData, setCameraData] = useState([])
+
+
+//   const [ships, setShips] = useState([
+//   { id: 1, name: "MV northern Star ", status: "active", location: "Singapore" ,camera_installed:"8"},
+//   { id: 2, name: "MV Atlantic poineer", status: "in_port", location: "Rotterdam" ,camera_installed:"5"},
+//   { id: 3, name: "MV Blue Whale", status: "maintenance", location: "Shanghai" ,camera_installed:"3"},
+//   { id: 4, name: "Ocean Queen", status: "active", location: "Long Beach" ,camera_installed:"10"},
+//   { id: 5, name: "Ocean King", status: "active", location: "Los Angeles" ,camera_installed:"7"},
+// ]);
+
+const [alerts, setAlerts] = useState([
+  {
+    title: "Fire detected in engine room",
+    description: "Temperature and smoke sensors have detected a possible fire in the engine room. Immediate evacuation and fire suppression required.",
+    shipName: "MV Northern Star",
+    location: "Engine Room - Deck 2",
+    severity: "emergency",
+    created_date: "2025-08-13T09:30:00Z"
+  },
+  {
+    title: "Smoke detected in cargo hold",
+    description: "Smoke detection system has triggered an alert in Cargo Hold A. Investigate for potential fire or overheating equipment.",
+    shipName: "MV Atlantic Pioneer",
+    location: "Cargo Hold A - Deck 1",
+    severity: "critical",
+    created_date: "2025-08-13T08:45:00Z"
+  },
+
+  {
+    title: "Smoke detected in crew quarters",
+    description: "Smoke alarms have been triggered in Crew Quarters B. Check for possible short circuits or small fires.",
+    shipName: "Ocean Queen",
+    location: "Crew Quarters B - Deck 4",
+    severity: "critical",
+    created_date: "2025-08-13T06:50:00Z"
+  },
+  {
+    title: "Engine overheating",
+    description: "The engine temperature has exceeded safe limits",
+    shipName: "MV Blue Whale",
+    location: "Ship ID: 1 - Deck 5",
+    severity: "critical",
+    created_date: "2025-08-13T09:30:00Z"
+  },
+  {
+    title: "High temperature warning in kitchen",
+    description: "Sensors detected unusually high temperatures in the galley area, possible electrical overheating.",
+    shipName: "MV Blue Whale",
+    location: "Galley - Deck 3",
+    severity: "medium",
+    created_date: "2025-08-13T07:15:00Z"
+  },
+    {
+    title: "High temperature warning in kitchen",
+    description: "Sensors detected unusually high temperatures in the galley area, possible electrical overheating.",
+    shipName: "MV Blue Whale",
+    location: "Galley - Deck 3",
+    severity: "medium",
+    created_date: "2025-08-13T07:15:00Z"
+  },
+  
+])
+
+
+// usecase analysis data
+const [cameraData, setCameraData] = useState([
+  { use_case: "Fire_Detection", confidence_score: 0.98, alert_level: "critical" },
+  { use_case: "Fire_Detection", confidence_score: 0.98, alert_level: "critical" },
+  { use_case: "Fire_Detection", confidence_score: 0.98, alert_level: "critical" },
+  { use_case: "Smoke_Detection", confidence_score: 0.95, alert_level: "critical" },
+  { use_case: "Smoke_Detection", confidence_score: 0.97, alert_level: "critical" },
+  { use_case: "PPT_KIT_Detection", confidence_score: 0.89, alert_level: "emergency" },
+  { use_case: "PPT_KIT_Detection", confidence_score: 0.90, alert_level: "emergency" },
+  { use_case: "Anomaly_Detection", confidence_score: 0.87, alert_level: "critical" },
+  { use_case: "No_Cross_Detection", confidence_score: 0.86, alert_level: "medium" }
+]);
+
+// dummy metrics data for incident response
+const dummyMetrics = {
+  avgResponseTime: {
+    value: 120,
+    trend: "up",
+    change: "15 mins since last week"
+  },
+  resolutionRate: {
+    value: "75%",
+    resolved: 150,
+    pending: 50
+  },
+  preventionRate: {
+    value: "80%",
+    change: "10% since last month"
+  }
+};
+
+
+// ..........end 
+
+
+
   const [activeView, setActiveView] = useState('global')
   const [isLoading, setIsLoading] = useState(true)
+  const [incidentMetrics, setIncidentMetrics] = useState({});
 
   useEffect(() => {
     loadDashboardData()
   }, [])
 
+
+
+  // const loadDashboardData = async () => {
+  //   setIsLoading(true)
+  //   try {
+  //     const shipsData = [],
+  //       alertsData = [],
+  //       cameraDataResults = []
+  //     setShips(shipsData)
+  //     setAlerts(alertsData)
+  //     setIncidentMetrics(dashboardData.incidentResponseMetrics);
+  //     setCameraData(cameraDataResults)
+  //   } catch (error) {
+  //     console.error('Error loading dashboard data:', error)
+  //   }
+  //   setIsLoading(false)
+  // }
+
+
+// demo purpose  after that we will remove this and use the above loadDashboardData function
   const loadDashboardData = async () => {
-    setIsLoading(true)
-    try {
-      const shipsData = [],
-        alertsData = [],
-        cameraDataResults = []
-      setShips(shipsData)
-      setAlerts(alertsData)
-      setCameraData(cameraDataResults)
-    } catch (error) {
-      console.error('Error loading dashboard data:', error)
-    }
-    setIsLoading(false)
+  setIsLoading(true)
+  try {
+    // const shipsData = [] // API call here later
+    const shipsResponse = await axios.get('/no-guards/entity', { params: { limit: 50, pageNo: 1 } });
+    
+    // Adjust this line according to your actual API response structure
+    const shipsData = shipsResponse.data.entities || shipsResponse.data || [];
+
+    setShips(shipsData);
+    const alertsData = []
+    const cameraDataResults = await axios.get('/camera', { params: { limit: 50, pageNo: 1 } });
+    // const cameraDataResults = []
+    // setIncidentMetrics(incidentResponseMetrics);
+
+    if (alertsData.length > 0) setAlerts(alertsData)
+    if (cameraDataResults.length > 0) setCameraData(cameraDataResults)
+      console.log("ships data", shipsData);
+  } catch (error) {
+    console.error('Error loading dashboard data:', error)
   }
+  setIsLoading(false)
+}
+// ............................
 
   const criticalAlerts = alerts.filter(
-    (alert) => alert.severity === 'critical' || alert.severity === 'emergency'
+    (alert) => alert.severity === 'critical' || alert.severity === 'emergency' || alert.severity === 'medium'
   )
-  const activeShips = ships.filter((ship) => ship.status === 'active')
+  // i have
+  const activeShips = ships.filter((ship) => ship.status === 'active' || ship.status === 'in_port')
 
+  // this is for time update i added
+  const [time, setTime] = useState(new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTime(new Date());
+    }, 1000); // update every second
+
+    return () => clearInterval(timer);
+  }, []);
+
+  // ..........
   return (
     <div className='p-6 bg-gradient-to-br from-slate-50 to-slate-100 min-h-screen'>
       <div className='max-w-7xl mx-auto space-y-6'>
@@ -75,7 +221,7 @@ export default function Dashboard() {
               variant='outline'
               className='bg-blue-50 text-blue-700 border-blue-200'
             >
-              Last Updated: 2 min ago
+              Last Updated: {new Date().getMinutes()} min ago
             </Badge>
           </div>
         </div>
@@ -84,9 +230,9 @@ export default function Dashboard() {
         <Tabs
           value={activeView}
           onValueChange={setActiveView}
-          className='w-full'
+          className='w-full '
         >
-          <TabsList className='grid w-full grid-cols-2 lg:grid-cols-5 h-auto p-1 bg-white shadow-sm'>
+          <TabsList className='grid w-full grid-cols-2 lg:grid-cols-3 h-auto p-1 bg-white shadow-sm'>
             <TabsTrigger
               value='global'
               className='flex items-center gap-2 py-3'
@@ -105,24 +251,24 @@ export default function Dashboard() {
               <MapPin className='w-4 h-4' />
               Location View
             </TabsTrigger>
-            <TabsTrigger
+            {/* <TabsTrigger
               value='manager'
               className='flex items-center gap-2 py-3'
             >
               <Users className='w-4 h-4' />
               Manager View
-            </TabsTrigger>
-            <TabsTrigger
+            </TabsTrigger> */}
+            {/* <TabsTrigger
               value='client'
               className='flex items-center gap-2 py-3'
             >
               <Shield className='w-4 h-4' />
               Client View
-            </TabsTrigger>
+            </TabsTrigger> */}
           </TabsList>
 
-          {/* Global Admin View */}
-          <TabsContent value='global' className='space-y-6'>
+          {/* Global A  dmin View */}
+          <TabsContent value='global' className='space-y-8'>
             <DashboardStats
               ships={ships}
               alerts={alerts}
@@ -131,25 +277,30 @@ export default function Dashboard() {
             />
 
             <div className='grid lg:grid-cols-2 gap-6'>
+              {/* added to my purpose
+              <div className='lg:col-span-2'>
+                <RecentAlerts alerts={criticalAlerts} />
+              </div> */}
               <div className='space-y-6'>
-                <ShipOverview ships={activeShips} />
-                <CameraMetrics cameraData={cameraData} />
+                <ShipOverview ships={ships} />
+                <IncidentResponseMetrics metrics={dummyMetrics} />
               </div>
-              <div className='space-y-6'>
+              <div className='space-y-8 space-x-8'>
                 <RecentAlerts alerts={criticalAlerts} />
                 <UseCaseAnalytics cameraData={cameraData} />
-              </div>
+              </div> 
             </div>
           </TabsContent>
 
           {/* Ship View */}
           <TabsContent value='ships' className='space-y-6'>
-            <div className='grid lg:grid-cols-3 gap-6'>
+            <div className='grid lg:grid-cols-4 gap-6'>
               <div className='lg:col-span-2'>
                 <ShipOverview ships={ships} detailed={true} />
               </div>
-              <div>
-                <RecentAlerts alerts={alerts.filter((a) => a.ship_id)} />
+              <div  className='lg:col-span-2'>
+                {/* <RecentAlerts alerts={alerts.filter((a) => a.ship_id)} /> */}
+                <RecentAlerts alerts={criticalAlerts} />
               </div>
             </div>
           </TabsContent>
@@ -249,12 +400,12 @@ export default function Dashboard() {
               </Card>
             </div>
             <div className='grid lg:grid-cols-2 gap-6'>
-              <CameraMetrics cameraData={cameraData} />
+              <IncidentResponseMetrics metrics={incidentMetrics} />
               <RecentAlerts alerts={alerts} />
             </div>
           </TabsContent>
 
-          {/* Client View */}
+          {/* Client View
           <TabsContent value='client' className='space-y-6'>
             <Card>
               <CardHeader>
@@ -290,7 +441,7 @@ export default function Dashboard() {
               <ShipOverview ships={ships.slice(0, 8)} />
               <RecentAlerts alerts={alerts.slice(0, 5)} />
             </div>
-          </TabsContent>
+          </TabsContent> */}
         </Tabs>
       </div>
     </div>

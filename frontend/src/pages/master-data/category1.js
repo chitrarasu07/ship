@@ -226,7 +226,7 @@ export default function Category1() {
                 <TableCell>Code</TableCell>
                 <TableCell>Ship Type</TableCell>
                 <TableCell>Status</TableCell>
-                <TableCell></TableCell>
+                <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -241,20 +241,21 @@ export default function Category1() {
                   <TableCell>{row.code}</TableCell>
                   <TableCell>{row.name}</TableCell>
                   <TableCell>{row.status}</TableCell>
+                  
 
                   <TableCell>
+                    <Button
+                      onClick={() => editRecord(row)}
+                      startIcon={<EditIcon />}
+                    >
+                      Edit
+                    </Button>
                     <Button
                       onClick={() => setDeleteRow(row)}
                       startIcon={<Delete />}
                       color='error'
                     >
                       Delete
-                    </Button>
-                    <Button
-                      onClick={() => editRecord(row)}
-                      startIcon={<EditIcon />}
-                    >
-                      Edit
                     </Button>
                   </TableCell>
                 </TableRow>

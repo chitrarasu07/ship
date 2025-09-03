@@ -18,20 +18,31 @@ import {
   TableCell,
   TableBody,
   TableFooter,
-  TablePagination
+  TablePagination,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions
 } from '@mui/material'
 import axios from 'axios'
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 import { SCBtnLoader, SCErrorSpan } from '@/styled-components/common'
+import { Delete } from '@mui/icons-material'
+import { useSnackbar } from '@/context/StackedSnackbar'
+import { useApp } from '@/context/AppContext'
 
 export default function ReferenceMaster() {
   const rowsPerPage = 10
+  const { org } = useApp()
+  const [open, setOpen] = useState(false)
   const [refMaster, setRefMaster] = useState([])
   const [dataLoading, setDataLoading] = useState(true)
   const [searchError, setSearchError] = useState('')
+  const [deleteRow, setDeleteRow] = useState(null)
   const [searchData, setSearchData] = useState({
     code: '',
     name: '',
+    entity: null,
     isActive: true
   })
   const [tablePage, setTablePage] = useState(0)
@@ -96,8 +107,26 @@ export default function ReferenceMaster() {
     router.push('/master-data/referenceMasterCurd')
   }
 
-  const editRecord = (id) => {
-    router.push(`/master-data/referenceMasterCurd?id=${id}`)
+  const editRecord = (row) => {
+    setDataLoading(true)
+    router.push(`/master-data/referenceMasterCurd?id=${row.id}`)
+  }
+  const { addSnackbar } = useSnackbar()
+
+  const handleDelete = async (id) => {
+    try {
+      setDataLoading(true)
+      await axios.delete(`/reference-master/${deleteRow.id}`) // Adjust endpoint as needed
+      addSnackbar(`Reference Master ${deleteRow.name}  deleted successfully`)
+      setDeleteRow(null)
+      searchRecord(true) // Refresh the list after deletion
+    } catch (error) {
+      setDataLoading(false)
+      setSearchError(error.response?.data?.error || error.response?.statusText)
+      console.error(error)
+    } finally {
+      setDataLoading(false)
+    }
   }
 
   return (
@@ -194,8 +223,10 @@ export default function ReferenceMaster() {
                   <TableCell>S.No</TableCell>
                   <TableCell>Code</TableCell>
                   <TableCell>Name</TableCell>
-                  <TableCell>Description</TableCell>
-                  <TableCell></TableCell>
+                  <TableCell>{org.entity}</TableCell>
+                  <TableCell>Status</TableCell>
+                  {/* <TableCell>Description</TableCell> */}
+                  <TableCell>Actions</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -204,13 +235,26 @@ export default function ReferenceMaster() {
                     <TableCell>{index + 1 + tablePage * rowsPerPage}</TableCell>
                     <TableCell>{row.code}</TableCell>
                     <TableCell>{row.name}</TableCell>
-                    <TableCell>{row.description}</TableCell>
+                    <TableCell>
+                      {row.entity && `${row.entity.name} (${row.entity.code})`}
+                    </TableCell>
+                    <TableCell>
+                     {row.referenceMasters && `${row.referenceMasters.name} (${row.referenceMasters.code})`}
+                    </TableCell>
+                    {/* <TableCell>{row.description}</TableCell> */}
                     <TableCell>
                       <Button
-                        onClick={() => editRecord(row.id)}
+                        onClick={() => editRecord(row)}
                         startIcon={<EditIcon />}
                       >
                         Edit
+                      </Button>
+                      <Button
+                        onClick={() => setDeleteRow(row)}
+                        startIcon={<Delete />}
+                        color='error'
+                      >
+                        Delete
                       </Button>
                     </TableCell>
                   </TableRow>
@@ -234,6 +278,21 @@ export default function ReferenceMaster() {
           ''
         )}
       </div>
+      <Dialog open={Boolean(deleteRow?.id)} onClose={() => setDeleteRow(null)}>
+        <DialogTitle>Confirm Deactivation</DialogTitle>
+        <DialogContent>
+          <Typography>
+            Are you sure you want to deactivate {deleteRow?.name}{' '}
+            {org.referenceMasters}?
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDeleteRow(null)}>Cancel</Button>
+          <Button color='error' onClick={handleDelete}>
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   )
 }

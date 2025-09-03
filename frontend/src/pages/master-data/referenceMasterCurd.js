@@ -20,21 +20,25 @@ import EditIcon from '@mui/icons-material/Edit'
 import SaveIcon from '@mui/icons-material/Save'
 import ClearIcon from '@mui/icons-material/Clear'
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline'
 import ReferenceValueForm from '@/components/master-data/referenceValueForm'
 import { SCBtnLoader, SCErrorSpan } from '@/styled-components/common'
 import { useSnackbar } from '@/context/StackedSnackbar'
+import { Delete } from '@mui/icons-material'
+import EntityAutocomplete from '@/components/autocomplete/entityAutocomplete'
+import ReferenceValuesAutocomplete from '@/components/autocomplete/referenceValuesAutocomplete'
 
 export default function ReferenceMasterCurd() {
   const [formData, setFormData] = useState({
     id: null,
     name: '',
     code: '',
+    entity: '',
     description: ''
   })
   const [errorField, setErrorField] = useState({
     code: false,
-    name: false
+    name: false,
+    entity: false
   })
   const router = useRouter()
   const { addSnackbar } = useSnackbar()
@@ -70,13 +74,13 @@ export default function ReferenceMasterCurd() {
           error.response?.data?.error || error.response?.statusText
         )
       } finally {
-        setFormData({
-          id: null,
-          code: '',
-          name: '',
-          description: ''
-        })
-        setTableData([])
+        // setFormData({
+        //   id: null,
+        //   code: '',
+        //   name: '',
+        //   description: ''
+        // })
+        // setTableData([])   -> clear table data
         setDataSaving(false)
       }
     }
@@ -112,6 +116,12 @@ export default function ReferenceMasterCurd() {
     setRowIndex(index)
     setReferenceValue(row)
     setOpen(true)
+  }
+  const validateField = (name, value) => {
+    setErrorField((prevData) => ({
+      ...prevData,
+      [name]: !value
+    }))
   }
 
   const onReferenceValueSave = (newRefValue) => {
@@ -159,11 +169,13 @@ export default function ReferenceMasterCurd() {
       setErrorMessage('')
       const temp = {
         ...formData,
+        entity_id: formData.entity?.id || null,
         referenceValues: tableData
       }
+      delete temp.entity // Remove the full entity object
 
       if (formData.id) {
-        await axios.put(`/reference-master/${id}`, temp)
+        await axios.put(`/reference-master/${formData.id}`, temp)
       } else {
         await axios.post('/reference-master', temp)
       }
@@ -173,12 +185,11 @@ export default function ReferenceMasterCurd() {
     } catch (error) {
       console.error(error)
       setErrorMessage(error.response?.data?.error || error.response?.statusText)
-    } finally {
-      setDataSaving(false)
     }
+    setDataSaving(false)
   }
 
-  console.log('fo', formData)
+  // console.log('fo', formData)
   return (
     <>
       <div style={{ overflow: 'hidden', padding: '0px 20px' }}>
@@ -220,7 +231,23 @@ export default function ReferenceMasterCurd() {
                   required
                 />
               </Grid>
-              <Grid item xs={12} sm={6} md={2} lg={3}>
+              <EntityAutocomplete
+                value={formData.entity}
+                InputProps={{
+                  error: errorField.entity
+                }}
+                AutocompleteProps={{
+                  required: true,
+                  onChange: (event, value) => {
+                    setFormData({
+                      ...formData,
+                      entity: value
+                    })
+                    validateField('entity', value)
+                  }
+                }}
+              />
+              {/* <Grid item xs={12} sm={6} md={2} lg={3}>
                 <TextField
                   label='Description'
                   name='description'
@@ -228,7 +255,17 @@ export default function ReferenceMasterCurd() {
                   onChange={handleFormChange}
                   fullWidth
                 />
-              </Grid>
+              </Grid> */}
+              {/* <ReferenceValuesAutocomplete
+                value={formData.reference}
+                onChange={(_event, value) => {
+                  setFormData((prev) => ({ ...prev, reference: value }))
+                  validateField('reference', value)
+                }}
+                label='Ship Status'
+                error={errorField.reference}
+                helperText={errorMessage.reference}
+              /> */}
             </Grid>
           </Box>
           <Box sx={{ display: 'flex', p: '10px' }}>
@@ -249,13 +286,13 @@ export default function ReferenceMasterCurd() {
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <TableContainer>
-                  <Table >
+                  <Table>
                     <TableHead>
                       <TableRow>
                         <TableCell>Code</TableCell>
                         <TableCell>Name</TableCell>
                         <TableCell>Description</TableCell>
-                        <TableCell>Active</TableCell>
+                        <TableCell>Status</TableCell>
                         <TableCell>Sort Order</TableCell>
                         <TableCell>Related Value</TableCell>
                         <TableCell>Actions</TableCell>
@@ -273,17 +310,20 @@ export default function ReferenceMasterCurd() {
                           <TableCell>{row.sortOrder}</TableCell>
                           <TableCell>{row.relatedValue}</TableCell>
                           <TableCell>
-                            <IconButton onClick={() => editRecord(row, index)}>
-                              <EditIcon />
-                            </IconButton>
-                            {tableData.length > 1 && !row.id && (
-                              <IconButton
-                                onClick={() => handleRemoveRow(index, row.id)}
-                                color='error'
-                              >
-                                <DeleteOutlineIcon />
-                              </IconButton>
-                            )}
+                            <Button
+                              startIcon={<EditIcon />}
+                              onClick={() => editRecord(row, index)}
+                            >
+                              Edit
+                            </Button>
+
+                            <Button
+                              startIcon={<Delete />}
+                              onClick={() => handleRemoveRow(index, row.id)}
+                              color='error'
+                            >
+                              Delete
+                            </Button>
                           </TableCell>
                         </TableRow>
                       ))}

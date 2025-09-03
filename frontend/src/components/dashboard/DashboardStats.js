@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import {
@@ -11,14 +11,19 @@ import {
 } from 'lucide-react'
 
 export default function DashboardStats({
+  
   ships = [],
   alerts = [],
   cameraData = [],
-  isLoading = false
+  isLoading = false,
+
 }) {
-  const activeShips = ships.filter((ship) => ship.status === 'active').length
+  // this an count of an active ships
+  const activeShips = ships.filter((ship) => ship.status === 'A').length
+
+  // this is an count of total cameras installed
   const totalCameras = ships.reduce(
-    (sum, ship) => sum + (ship.cameras_installed || 0),
+    (sum, ship) => sum + Number(ship.cameras_installed || 0),
     0
   )
   const criticalAlerts = alerts.filter(
@@ -29,9 +34,33 @@ export default function DashboardStats({
       ? (
           (cameraData.filter((d) => d.confidence_score > 0.8).length /
             cameraData.length) *
-          100
+          96.6
         ).toFixed(1)
       : 0
+// logic for trend and trendup 
+const [previousStats, setPreviousStats] = useState(null);
+
+  // Helper to calculate trend
+  const getTrend = (current, previous) => {
+    if (!previous || previous === 0) return { trend: '0%', trendUp: false };
+    const diff = current - previous;
+    const percentChange = ((diff / previous) * 100).toFixed(1);
+    return {
+      trend: `${percentChange > 0 ? '+' : ''}${percentChange}%`,
+      trendUp: percentChange > 0
+    };
+  };
+  
+
+  // Store current values for trend calculation next render
+  useEffect(() => {
+    setPreviousStats({
+      activeShips,
+      totalCameras,
+      criticalAlerts,
+      dataProcessingRate
+    });
+  }, [activeShips, totalCameras, criticalAlerts, dataProcessingRate]);
 
   const stats = [
     {
@@ -40,7 +69,7 @@ export default function DashboardStats({
       total: ships.length,
       icon: Ship,
       color: 'blue',
-      trend: '+12%',
+      trend: '2%',
       trendUp: true
     },
     {
@@ -49,7 +78,7 @@ export default function DashboardStats({
       subtitle: 'cameras online',
       icon: Camera,
       color: 'green',
-      trend: '+3%',
+      trend: '1.5%',
       trendUp: true
     },
     {
@@ -58,7 +87,7 @@ export default function DashboardStats({
       subtitle: 'require attention',
       icon: AlertTriangle,
       color: 'red',
-      trend: '-8%',
+      trend: '3%',
       trendUp: false
     },
     {
@@ -67,8 +96,8 @@ export default function DashboardStats({
       subtitle: 'accuracy rate',
       icon: Activity,
       color: 'purple',
-      trend: '+2%',
-      trendUp: true
+      trend:'1.4%',
+      trendUp: false
     }
   ]
 
@@ -105,6 +134,7 @@ export default function DashboardStats({
       </div>
     )
   }
+
 
   return (
     <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6'>
@@ -146,11 +176,14 @@ export default function DashboardStats({
               >
                 {stat.trend}
               </span>
-              <span className='text-slate-500'>vs last week</span>
+              <span className='text-slate-500'>vs last Day</span>
             </div>
           </CardContent>
         </Card>
       ))}
+
+      
     </div>
   )
+  
 }

@@ -13,9 +13,12 @@ import {
   XCircle,
   Search,
   Filter,
-  Bell
+  Bell,
+  Play
 } from 'lucide-react'
 import { format } from 'date-fns'
+import { Dialog, DialogContent, DialogTitle } from '@mui/material'
+import { DialogHeader } from '@/components/ui/dialog'
 
 export default function AlertsPage() {
   const [alerts, setAlerts] = useState([])
@@ -23,16 +26,75 @@ export default function AlertsPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [activeTab, setActiveTab] = useState('all')
   const [isLoading, setIsLoading] = useState(true)
+  const [selectedAlert, setSelectedAlert] = useState(null)
 
   useEffect(() => {
     loadData()
   }, [])
 
+  // const loadData = async () => {
+  //   setIsLoading(true)
+  //   try {
+  //     const alertsData = [],
+  //       shipsData = []
+  //     setAlerts(alertsData)
+  //     setShips(shipsData)
+  //   } catch (error) {
+  //     console.error('Error loading alerts:', error)
+  //   }
+  //   setIsLoading(false)
+  // }
+
+  // Load initial or dummy dta to this  data
   const loadData = async () => {
     setIsLoading(true)
     try {
-      const alertsData = [],
-        shipsData = []
+      // Dummy Alerts
+      const alertsData = [
+        {
+          id: 1,
+          title: 'Fire detected in Engine Room',
+          description: 'Fire detected in the engine room. Immediate action required.',
+          severity: 'critical',
+          status: 'active',
+          ship_id: 1,
+          location: 'Engine Room',
+          videoUrl: '../videos/fire-detect-1.mp4',
+          created_date: new Date().toISOString()
+        },
+        {
+          id: 2,
+          title: 'Hull Breach Detected',
+          description: 'Minor breach detected near cargo bay.',
+          severity: 'high',
+          status: 'acknowledged',
+          ship_id: 2,
+          location: 'Cargo Bay',
+          videoUrl: '../videos/fire-detect-1.mp4',
+          created_date: new Date(Date.now() - 3600 * 1000).toISOString() // 1hr ago
+        },
+        {
+          id: 3,
+          title: 'Navigation System Failure',
+          description: 'Autopilot system malfunctioned.',
+          severity: 'emergency',
+          status: 'resolved',
+          ship_id: 1,
+          videoUrl: '../videos/fire-detect-1.mp4',
+          created_date: new Date(Date.now() - 24 * 3600 * 1000).toISOString() // 1 day ago
+        }
+      ]
+
+      // // Dummy Ships
+      // const shipsData = [
+      //   { id: 1, name: 'SS Voyager' },
+      //   { id: 2, name: 'SS Explorer' }
+      // ]
+      const res = await axios.get('/no-guards/entity', {
+        params: { limit: 20, pageNo: 1 }
+      })
+      const shipsData = res.data.entities // ✅ fix key
+
       setAlerts(alertsData)
       setShips(shipsData)
     } catch (error) {
@@ -40,6 +102,7 @@ export default function AlertsPage() {
     }
     setIsLoading(false)
   }
+  //.............end
 
   const handleAcknowledge = async (alertId) => {
     try {
@@ -234,6 +297,17 @@ export default function AlertsPage() {
                       <div className='flex items-center gap-2'>
                         {alert.status === 'active' && (
                           <>
+                            {/* View button */}
+                            <Button
+                              variant='outline'
+                              size='sm'
+                              onClick={() => setSelectedAlert(alert)}
+                              // onClick={() => window.open(videoUrl, "")}
+                              className='flex items-center gap-1 text-blue-600 hover:text-blue-700'
+                            >
+                              <Play className='w-3 h-3' />
+                              View
+                            </Button>
                             <Button
                               variant='outline'
                               size='sm'
@@ -275,6 +349,33 @@ export default function AlertsPage() {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Video Dialog */}
+      <Dialog
+        open={!!selectedAlert}
+        onClose={() => setSelectedAlert(null)}
+        maxWidth='xl'
+      >
+        <DialogContent className='max-w-8xl bg-gray-200 '>
+          <DialogHeader>
+            <DialogTitle className='font-bold'>
+              {selectedAlert?.title} - Video
+            </DialogTitle>
+            <button
+              className='absolute top-2 right-3 text-lg bg-red-500 text-white p-1 rounded-full hover:bg-red-600'
+              onClick={() => setSelectedAlert(null)}
+            >
+              ✕
+            </button>
+          </DialogHeader>
+          {selectedAlert && (
+            <video controls className='w-full rounded-lg'>
+              <source src={selectedAlert.videoUrl} type='video/mp4' />
+              Your browser does not support the video tag.
+            </video>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

@@ -244,7 +244,7 @@ export default function Category2() {
                 <TableCell>City Name</TableCell>
                 <TableCell>Status</TableCell>
                 <TableCell>{org.category1}</TableCell>
-                <TableCell></TableCell>
+                <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -265,17 +265,17 @@ export default function Category2() {
                   </TableCell>
                   <TableCell>
                     <Button
+                      onClick={() => editRecord(row)}
+                      startIcon={<EditIcon />}
+                    >
+                      Edit
+                    </Button>
+                    <Button
                       onClick={() => setDeleteRow(row)}
                       startIcon={<Delete />}
                       color='error'
                     >
                       Delete
-                    </Button>
-                    <Button
-                      onClick={() => editRecord(row)}
-                      startIcon={<EditIcon />}
-                    >
-                      Edit
                     </Button>
                   </TableCell>
                 </TableRow>

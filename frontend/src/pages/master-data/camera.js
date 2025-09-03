@@ -25,63 +25,54 @@ import {
 } from '@mui/material'
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 import axios from 'axios'
-import Category3CRUD from '../../components/master-data/category3Crud'
+import CameraCRUD from '../../components/master-data/cameraCrud' // you'll create this component
 import { SCBtnLoader, SCErrorSpan } from '@/styled-components/common'
-import { Delete } from '@mui/icons-material'
+import { Delete, Edit } from '@mui/icons-material'
 import { useSnackbar } from '@/context/StackedSnackbar'
 import { useApp } from '@/context/AppContext'
-import Category1Autocomplete from '@/components/autocomplete/category1Autocomplete'
-import Category2Autocomplete from '@/components/autocomplete/category2Autocomplete'
 
-export default function Category3() {
+
+export default function Camera() {
   const rowsPerPage = 10
   const { org } = useApp()
   const { addSnackbar } = useSnackbar()
   const [open, setOpen] = useState(false)
-  const [category3, setCategory3] = useState(null)
+  const [camera, setCamera] = useState(null)
   const [tablePage, setTablePage] = useState(0)
-  const [categories3, setCategories3] = useState([])
+  const [cameras, setCameras] = useState([])
   const [totalRecord, setTotalRecord] = useState(0)
   const [dataLoading, setDataLoading] = useState(true)
   const [searchError, setSearchError] = useState('')
   const [deleteRow, setDeleteRow] = useState(null)
   const [searchData, setSearchData] = useState({
-    code: '',
     name: '',
-    sortOrder: '',
-    isActive: true,
-    category1: null,
-    category2: null
+    location: '',
+    isActive: true
   })
 
   useEffect(() => {
-    searchRecord(true)
+    searchRecords(true)
   }, [])
 
   const handleSearchChange = (event) => {
     const { name, value, checked, type } = event.target
     setSearchData({
       ...searchData,
-      [name]:
-        name === 'code'
-          ? value.toUpperCase()
-          : type === 'checkbox'
-            ? checked
-            : value
+      [name]: type === 'checkbox' ? checked : value
     })
   }
 
   const newRecord = () => {
-    setCategory3(null)
+    setCamera(null)
     setOpen(true)
   }
 
   const editRecord = (row) => {
-    setCategory3(row)
+    setCamera(row)
     setOpen(true)
   }
 
-  const searchRecord = async (getCount, pageNo) => {
+  const searchRecords = async (getCount, pageNo) => {
     try {
       pageNo = pageNo || 0
       setDataLoading(true)
@@ -90,23 +81,19 @@ export default function Category3() {
       if (getCount) {
         setTotalRecord(0)
         setTablePage(0)
-        setCategories3([])
+        setCameras([])
       }
 
-      const res = await axios.get('/category3', {
+      const res = await axios.get('/camera', {
         params: {
           ...searchData,
           getCount,
           pageNo: pageNo + 1,
-          limit: rowsPerPage,
-          category1: undefined,
-          category2: undefined,
-          category1_id: searchData.category1?.id,
-          category2_id: searchData.category2?.id
+          limit: rowsPerPage
         }
       })
       setDataLoading(false)
-      setCategories3(res?.data?.categories3 || [])
+      setCameras(res?.data?.cameras || [])
       getCount && setTotalRecord(res?.data?.total || 0)
     } catch (error) {
       setDataLoading(false)
@@ -117,7 +104,7 @@ export default function Category3() {
 
   const handleChangePage = (event, newPage) => {
     setTablePage(newPage)
-    searchRecord(false, newPage)
+    searchRecords(false, newPage)
   }
 
   const handleClose = () => {
@@ -128,10 +115,10 @@ export default function Category3() {
     try {
       setSearchError('')
       setDataLoading(true)
-      await axios.delete(`/category3/${deleteRow.id}`)
+      await axios.delete(`/camera/${deleteRow.id}`)
       setDeleteRow(null)
-      searchRecord(true)
-      addSnackbar(`${org.category3} - ${deleteRow.name} deleted Successfully`)
+      searchRecords(true)
+      addSnackbar(`Camera - ${deleteRow.name} deleted Successfully`)
     } catch (error) {
       setDataLoading(false)
       setSearchError(error.response?.data?.error || error.response?.statusText)
@@ -149,18 +136,9 @@ export default function Category3() {
         }}
       >
         <Grid container spacing={3}>
-          <Grid item sm={6} md={2}>
+          <Grid item sm={6} md={3}>
             <TextField
               autoFocus
-              fullWidth
-              label='Code'
-              name='code'
-              value={searchData.code}
-              onChange={handleSearchChange}
-            />
-          </Grid>
-          <Grid item sm={6} md={2}>
-            <TextField
               fullWidth
               label='Name'
               name='name'
@@ -168,36 +146,17 @@ export default function Category3() {
               onChange={handleSearchChange}
             />
           </Grid>
-          <Grid item sm={6} md={2}>
-            <Category1Autocomplete
-              value={searchData.category1}
-              AutocompleteProps={{
-                onChange: (event, value) => {
-                  setSearchData({
-                    ...searchData,
-                    category1: value,
-                    category2: null
-                  })
-                }
-              }}
+          <Grid item sm={6} md={3}>
+            <TextField
+              fullWidth
+              label='Location'
+              name='location'
+              value={searchData.location}
+              onChange={handleSearchChange}
             />
           </Grid>
-          <Grid item sm={6} md={2}>
-            <Category2Autocomplete
-              value={searchData.category2}
-              category1_id={searchData.category1?.id || null}
-              AutocompleteProps={{
-                onChange: (event, value) => {
-                  setSearchData({
-                    ...searchData,
-                    category2: value,
-                    category1: value?.category1 || null
-                  })
-                }
-              }}
-            />
-          </Grid>
-          <FormControlLabel
+          <Grid item sm={6} md={3}>
+            <FormControlLabel
               control={
                 <Switch
                   name='isActive'
@@ -207,18 +166,11 @@ export default function Category3() {
               }
               label='Active Only'
             />
-          <Grid
-            item
-            sm={12}
-            md={6}
-            container
-            direction='row'
-            alignItems='flex-end'
-          >
-            
+          </Grid>
+          <Grid item sm={12} md={3} container alignItems='flex-end'>
             <Button
               variant='outlined'
-              onClick={() => searchRecord(true)}
+              onClick={() => searchRecords(true)}
               disabled={dataLoading}
               startIcon={<SearchIcon />}
             >
@@ -241,9 +193,10 @@ export default function Category3() {
           </Grid>
         ) : (
           ''
-        )}
+          )}
       </Box>
-      {!dataLoading && !categories3.length && !searchError ? (
+
+      {!dataLoading && !cameras.length && !searchError ? (
         <Typography
           variant='body2'
           color='error'
@@ -255,55 +208,41 @@ export default function Category3() {
       ) : (
         ''
       )}
-      {categories3.length ? (
+
+      {cameras.length  ? (
         <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 650 }} aria-label='simple table'>
+          <Table sx={{ minWidth: 650 }} aria-label='camera table'>
             <TableHead>
               <TableRow>
-                <TableCell>SN.No</TableCell>
+                <TableCell>S.No</TableCell>
                 <TableCell>Code</TableCell>
-                <TableCell>Port Name</TableCell>
-                <TableCell>Status</TableCell>
-                {/* <TableCell>{org.category2}</TableCell> */}
-                {/* <TableCell>{org.category1}</TableCell> */}
-                {/* i changed to this*/}
-                <TableCell>City Name</TableCell>
-                <TableCell>Ship Type</TableCell>
+                <TableCell>Name</TableCell>
+                <TableCell>Location</TableCell>
+                <TableCell>Type</TableCell>
+                <TableCell>IP Address</TableCell>
+                <TableCell>Port</TableCell>
+                {/* <TableCell>Status</TableCell> */}
                 <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {categories3.map((row, index) => (
-                <TableRow
-                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                  key={row.id}
-                >
-                  <TableCell component='th' scope='row'>
-                    {index + 1 + tablePage * rowsPerPage}
-                  </TableCell>
+              {cameras.map((row, index) => (
+                <TableRow key={row.id}>
+                  <TableCell>{index + 1 + tablePage * rowsPerPage}</TableCell>
                   <TableCell>{row.code}</TableCell>
                   <TableCell>{row.name}</TableCell>
-                  <TableCell>{row.status}</TableCell>
+                  <TableCell>{row.location}</TableCell>
+                  <TableCell>{row.type}</TableCell>
+                  <TableCell>{row.ip_address}</TableCell>
+                  <TableCell>{row.port}</TableCell>
+                  {/* <TableCell>{row.isActive ? 'Active' : 'Inactive'}</TableCell> */}
                   <TableCell>
-                    {row.category2 &&
-                      `${row.category2.name} (${row.category2.code})`}
-                  </TableCell>
-                  <TableCell>
-                    {row.category1 &&
-                      `${row.category1.name} (${row.category1.code})`}
-                  </TableCell>
-                  <TableCell>
-                    <Button
-                      onClick={() => editRecord(row)}
-                      startIcon={<EditIcon />}
-                    >
+                    <Button onClick={() => editRecord(row)} startIcon={<Edit />} color='primary'>
                       Edit
                     </Button>
-                    <Button
-                      onClick={() => setDeleteRow(row)}
-                      startIcon={<Delete />}
-                      color='error'
-                    >
+                    <Button onClick={() => setDeleteRow(row)}
+                    startIcon={<Delete />}
+                    color='error'>
                       Delete
                     </Button>
                     
@@ -311,7 +250,6 @@ export default function Category3() {
                 </TableRow>
               ))}
             </TableBody>
-
             <TableFooter>
               <TableRow>
                 <TablePagination
@@ -329,18 +267,19 @@ export default function Category3() {
       ) : (
         ''
       )}
-      <Category3CRUD
+
+      <CameraCRUD
         open={open}
         handleClose={handleClose}
-        id={category3?.id}
-        onSave={() => searchRecord(true)}
+        id={camera?.id}
+        onSave={() => searchRecords(true)}
       />
+
       <Dialog open={Boolean(deleteRow?.id)} onClose={() => setDeleteRow(null)}>
-        <DialogTitle>Confirm Deactivation</DialogTitle>
+        <DialogTitle>Confirm Deletion</DialogTitle>
         <DialogContent>
           <Typography>
-            Are you sure you want to deactivate {deleteRow?.name}{' '}
-            {org.category3}?
+            Are you sure you want to delete {deleteRow?.name}?
           </Typography>
         </DialogContent>
         <DialogActions>

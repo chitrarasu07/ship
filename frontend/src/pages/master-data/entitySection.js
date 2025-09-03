@@ -119,7 +119,7 @@ export default function EntitySection() {
     setOpen(false)
   }
 
-  const handleDelete = async () => {
+  const handleDelete = async (id) => {
     try {
       setSearchError('')
       setDataLoading(true)

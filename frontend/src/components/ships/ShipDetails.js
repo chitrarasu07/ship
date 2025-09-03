@@ -28,6 +28,8 @@ const DetailItem = ({ icon: Icon, label, value }) => (
 )
 
 export default function ShipDetails({ ship, alerts, isLoading }) {
+
+
   if (isLoading) {
     return (
       <div className='p-6 space-y-6'>
@@ -62,7 +64,7 @@ export default function ShipDetails({ ship, alerts, isLoading }) {
       <div>
         <h1 className='text-3xl font-bold text-slate-900'>{ship.name}</h1>
         <p className='text-slate-500'>
-          {ship.ship_type
+          {(ship.ship_type || 'Bulk')
             .replace(/_/g, ' ')
             .replace(/\b\w/g, (l) => l.toUpperCase())}
         </p>
@@ -99,7 +101,11 @@ export default function ShipDetails({ ship, alerts, isLoading }) {
         <DetailItem
           icon={Calendar}
           label='Last Update'
-          value={format(new Date(ship.last_update), 'PPP p')}
+          value={
+            ship.last_update
+              ? format(new Date(ship.last_update.replace(' ', 'T')), 'PPP p')
+              : 'Not Available'
+          }
         />
       </div>
 

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Ship, Wifi, WifiOff, MapPin, Wrench } from 'lucide-react'
@@ -14,6 +14,27 @@ export default function ShipList({
     in_port: { icon: MapPin, color: 'bg-blue-100 text-blue-800' },
     maintenance: { icon: Wrench, color: 'bg-yellow-100 text-yellow-800' },
     offline: { icon: WifiOff, color: 'bg-red-100 text-red-800' }
+  }
+
+  const [data, setData] = useState([])
+  const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    fetchData()
+  }, [])
+
+  const fetchData = async () => {
+    setLoading(true)
+    try {
+      const response = await axios.get('/no-guards/entity', { params: { limit: 10, pageNo: 1 } })
+      setData(response.data.entities)
+
+      console.log('Fetched entities:', response.data.entities)
+    } catch (error) {
+      console.error('Error fetching data', error)
+    } finally {
+      setLoading(false)
+    }
   }
 
   if (isLoading) {
@@ -34,7 +55,7 @@ export default function ShipList({
     )
   }
 
-  if (ships.length === 0) {
+  if (data.length === 0) {
     return (
       <div className='text-center py-10 px-4'>
         <Ship className='w-12 h-12 text-slate-300 mx-auto mb-4' />
@@ -46,7 +67,7 @@ export default function ShipList({
 
   return (
     <div className='space-y-1 p-2'>
-      {ships.map((ship) => {
+      {data.map((ship) => {
         const config = statusConfig[ship.status] || statusConfig.offline
         const Icon = config.icon
         return (
@@ -76,6 +97,7 @@ export default function ShipList({
           </button>
         )
       })}
+
     </div>
   )
 }

@@ -15,5 +15,6 @@ const permissions = [
   { page: "category3", urlPath: "/master-data/categoryMaster" },
   { page: "entity-section", urlPath: "/master-data/entitySection" },
   { page: "reference-master", urlPath: "/master-data/referenceMaster" },
+  { page: "camera", urlPath: "/master-data/camera" }
 ];
 module.exports = permissions;

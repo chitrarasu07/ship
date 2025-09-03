@@ -127,9 +127,9 @@ module.exports = async function (app) {
         { f: "imo_number", t: "string" },           // added
         { f: "flag", t: "string" },                 // added
         { f: "cameras_installed", t: "string" },    // added
-        { f: "category1_id", t: "number" },
-        { f: "category2_id", t: "number" },
-        { f: "category3_id", t: "number" },
+        // { f: "category1_id", t: "number" },
+        // { f: "category2_id", t: "number" },
+        // { f: "category3_id", t: "number" },
       ])
     )
       return;
@@ -205,9 +205,10 @@ module.exports = async function (app) {
         { f: "imo_number", t: "string" },           // added
         { f: "flag", t: "string" },                 // added
         { f: "cameras_installed", t: "string" },    // added
-        { f: "category1_id", t: "number" },
-        { f: "category2_id", t: "number" },
-        { f: "category3_id", t: "number" },
+        // this is for Update table data 
+        // { f: "category1_id", t: "number" },
+        // { f: "category2_id", t: "number" },
+        // { f: "category3_id", t: "number" },
       ])
     )
       return;

@@ -7,7 +7,8 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogActions
+  DialogActions,
+  MenuItem
 } from '@mui/material'
 import axios from 'axios'
 import CloseIcon from '@mui/icons-material/Close'
@@ -32,7 +33,8 @@ export default function EntityCRUD(props) {
     cameras_installed: false,
     category1: false,
     category2: false,
-    category3: false
+    category3: false,
+    status: false
   }
   const [formData, setFormData] = useState({
     id: null,
@@ -44,7 +46,8 @@ export default function EntityCRUD(props) {
     cameras_installed: '',
     category1: null,
     category2: null,
-    category3: null
+    category3: null,
+    status: 'active'
   })
   const [errorField, setErrorField] = useState(defaultError)
 
@@ -110,18 +113,19 @@ export default function EntityCRUD(props) {
   }
 
   const handleSave = async () => {
-    formData.code = formData.code.trim();
-    formData.name = formData.name.trim();
+    formData.code = formData.code.trim()
+    formData.name = formData.name.trim()
     setErrorField({
-      code: !formData.code ? 'Required field' : '',
-      name: !formData.name ? 'Required field' : '',
-      imo_number: !formData.imo_number ? 'Required field' : '',
-      flag: !formData.flag ? 'Required field' : '',
-      cameras_installed: !formData.cameras_installed ? 'Required field' : '',
-      category1: !formData.category1,
-      category2: !formData.category2,
-      category3: !formData.category3
-    });
+      code: !formData.code ? 'Code is required' : '',
+      name: !formData.name ? 'Name is required' : '',
+      imo_number: !formData.imo_number ? 'IMO Number is required' : '',
+      flag: !formData.flag ? 'Flag is required' : '',
+      cameras_installed: !formData.cameras_installed ? 'Cameras Installed is required' : '',
+      // status: !formData.status ? 'Status is required' : '',
+      // category1: !formData.category1,
+      // category2: !formData.category2,
+      // category3: !formData.category3
+    })
 
     if (
       !formData.code ||
@@ -129,14 +133,15 @@ export default function EntityCRUD(props) {
       !formData.imo_number ||
       !formData.flag ||
       !formData.cameras_installed ||
-      !formData.category1 ||
-      !formData.category2 ||
-      !formData.category3
+      !formData.status
+      // !formData.category1 ||
+      // !formData.category2 ||
+      // !formData.category3
     )
-      return;
+      return
 
     setDataSaving(true)
-    
+
     // already  writen this i commend this - >  setError('this is blocked')
 
     try {
@@ -201,14 +206,33 @@ export default function EntityCRUD(props) {
             onChange={handleChange}
             helperText={errorField.name}
           />
-          <TextField
+          {/* <TextField
             fullWidth
             multiline
             name='comments'
             label='Comments'
             value={formData.comments}
             onChange={handleChange}
-          />
+          /> */}
+          {/*  if status is required to create an new record means , we enable this textfield  */}
+          {/* <TextField
+            select
+            fullWidth
+            label='Status'
+            name='status'
+            value={formData.status}
+            onChange={handleChange}
+            required
+            error={!!errorField.status}
+            helperText={errorField.status}
+            sx={{ m: 1 }}
+          >
+            <MenuItem value='active'>active</MenuItem>
+            <MenuItem value='in_port'>in_port</MenuItem>
+            <MenuItem value='maintenance'>maintenance</MenuItem>
+            <MenuItem value='offline'>offline</MenuItem>
+          </TextField> */}
+
           <TextField
             required
             fullWidth
@@ -242,9 +266,9 @@ export default function EntityCRUD(props) {
           <Category1Autocomplete
             value={formData.category1}
             // .................... this code is for show errors in that field..............//
-            InputProps={{
-              error: errorField.category1
-            }}
+            // InputProps={{
+            //   error: errorField.category1
+            // }}
             AutocompleteProps={{
               onChange: (event, value) => {
                 setFormData({
@@ -252,18 +276,18 @@ export default function EntityCRUD(props) {
                   category1: value,
                   category2: null
                 })
-                setErrorField((prev) => ({
-                  ...prev,
-                  category1: value ? '' : 'Required field'
-                }))
+                // setErrorField((prev) => ({
+                //   ...prev,
+                //   category1: value ? '' : 'Required field'
+                // }))
               }
             }}
           />
           <Category2Autocomplete
             value={formData.category2}
-            InputProps={{
-              error: errorField.category2
-            }}
+            // InputProps={{
+            //   error: errorField.category2
+            // }}
             category1_id={formData.category1?.id || null}
             AutocompleteProps={{
               onChange: (event, value) => {
@@ -272,18 +296,18 @@ export default function EntityCRUD(props) {
                   category2: value,
                   category1: value?.category1 || null
                 })
-                setErrorField((prev) => ({
-                  ...prev,
-                  category2: value ? '' : 'Required field'
-                }))
+                // setErrorField((prev) => ({
+                //   ...prev,
+                //   category2: value ? '' : 'Required field'
+                // }))
               }
             }}
           />
           <Category3Autocomplete
             value={formData.category3}
-            InputProps={{
-              error: errorField.category3
-            }}
+            // InputProps={{
+            //   error: errorField.category3
+            // }}
             category1_id={formData.category1?.id || null}
             category2_id={formData.category2?.id || null}
             AutocompleteProps={{
@@ -294,10 +318,10 @@ export default function EntityCRUD(props) {
                   category2: value?.category2 || null,
                   category1: value?.category1 || null
                 })
-                setErrorField({
-                  ...errorField,
-                  category3: value 
-                })
+                // setErrorField({
+                //   ...errorField,
+                //   category3: value
+                // })
               }
             }}
           />
