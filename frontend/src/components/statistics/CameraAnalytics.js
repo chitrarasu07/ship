@@ -16,10 +16,12 @@ import {
 } from 'recharts'
 
 export default function CameraAnalytics({ cameraData, ships }) {
-  const totalCameras = ships.reduce(
-    (sum, ship) => sum + (ship.cameras_installed || 0),
-    0
-  )
+  // const totalCameras = ships.reduce(
+  //   (sum, ship) => sum + (ship.cameras_installed || 0),
+  //   0
+  // )
+  
+  const totalCameras =  '30' // Mock data
   const activeCameras = Math.floor(totalCameras * 0.985) // Mock 98.5% uptime
   const avgConfidence =
     cameraData.length > 0
@@ -31,7 +33,10 @@ export default function CameraAnalytics({ cameraData, ships }) {
             cameraData.length) *
           100
         ).toFixed(1)
-      : 0
+      // : 0
+      : '96.5' // Mock data
+
+  
 
   // Mock time series data for charts
   const uptimeData = [
@@ -58,6 +63,8 @@ export default function CameraAnalytics({ cameraData, ships }) {
     acc[data.use_case] = (acc[data.use_case] || 0) + 1
     return acc
   }, {})
+
+
 
   return (
     <div className='space-y-6'>
@@ -113,7 +120,7 @@ export default function CameraAnalytics({ cameraData, ships }) {
           </CardHeader>
           <CardContent>
             <div className='text-2xl font-bold text-slate-900'>
-              {cameraData.length}
+              {/* {cameraData.length} */}95
             </div>
             <p className='text-sm text-slate-500'>Events processed</p>
           </CardContent>

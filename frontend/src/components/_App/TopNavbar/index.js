@@ -5,6 +5,7 @@ import Tooltip from '@mui/material/Tooltip'
 import CurrentDate from './CurrentDate'
 import { useSession } from 'next-auth/react'
 import Notification from '@/components/common/Notification'
+import style from './TopNavbar.module.css'
 
 const TopNavbar = ({ toogleActive }) => {
   const { data: session } = useSession()
@@ -12,13 +13,13 @@ const TopNavbar = ({ toogleActive }) => {
 
   return (
     <>
-      <div id='topnavbardark'>
+      <div id='topnavbardark' className={style.topnavbardark}>
         <AppBar
           color='inherit'
           sx={{
             backgroundColor: '#fff',
             boxShadow: '0px 4px 20px rgba(47, 143, 232, 0.07)',
-            py: '6px',
+            py: '2px',
             mb: '10px',
             position: 'sticky'
           }}

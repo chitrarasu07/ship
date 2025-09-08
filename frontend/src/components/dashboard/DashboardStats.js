@@ -19,7 +19,7 @@ export default function DashboardStats({
 
 }) {
   // this an count of an active ships
-  const activeShips = ships.filter((ship) => ship.status === 'A').length
+  const activeShips = ships.filter((ship) => ship.status === 'active').length
 
   // this is an count of total cameras installed
   const totalCameras = ships.reduce(

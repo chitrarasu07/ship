@@ -24,11 +24,12 @@ const SidebarNav = styled('nav')(({ theme }) => ({
   transition: '350ms',
   zIndex: '10',
   overflowY: 'auto',
-  scrollBehavior: 'smooth'
+  scrollBehavior: 'smooth',
+  scrollbarWidth: 'none'
 }))
 
 const SidebarWrap = styled('div')(({ theme }) => ({
-  width: '100%',
+  width: '100%'
 }))
 
 const Sidebar = ({ toogleActive }) => {
@@ -82,11 +83,11 @@ const Sidebar = ({ toogleActive }) => {
           <SidebarWrap>
             <Box
               sx={{
-                mb: '10px',
-                px: '20px',
+                mb: '5px',
+                px: '5px',
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'space-between',
+                justifyContent: 'space-between'
               }}
             >
               <Link href='/'>
@@ -101,26 +102,32 @@ const Sidebar = ({ toogleActive }) => {
                   alt='Logo'
                   className='white-logo'
                 />
-              {/* <Typography sx={{ 
-                fontSize: {
-                  xs: '8px',
-                  sm: '10px',
-                md: '15px'},
-                position: { xs: 'absolute',
-      sm: 'absolute',
-      md: 'absolute',
-    },
-    top: {
-      xs: '80px',
-      sm: '80px',
-      md: '108px',
-    },
-    left: {
-      xs: '85px',
-      sm: '85px',
-      md: '114px',
-    }}}>Maritime Intelligence</Typography> */}
-
+                {/* <Typography
+                  sx={{
+                    fontSize: {
+                      xs: '8px',
+                      sm: '10px',
+                      md: '15px'
+                    },
+                    position: {
+                      xs: 'absolute',
+                      sm: 'absolute',
+                      md: 'absolute'
+                    },
+                    top: {
+                      xs: '80px',
+                      sm: '80px',
+                      md: '108px'
+                    },
+                    left: {
+                      xs: '85px',
+                      sm: '85px',
+                      md: '114px'
+                    }
+                  }}
+                >
+                  Maritime Intelligence
+                </Typography> */}
               </Link>
               {/* Conditionally render the toggle button based on screen size */}
               <IconButton

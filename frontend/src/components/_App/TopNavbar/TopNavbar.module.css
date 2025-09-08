@@ -1,0 +1,14 @@
+/* .css-1ygil4i-MuiToolbar-root{
+    position: sticky;
+    top: 0;
+    z-index: 10;
+} */
+ .topnavbardark {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  
+}
+.MuiToolbar-regular{
+box-Shadow: '0px 4px 20px rgba(47, 143, 232, 0.07)',
+}

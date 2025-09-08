@@ -34,12 +34,22 @@ export default function PerformanceCharts({
 
   const timeSeriesData = generateTimeSeriesData()
 
-  const fleetPerformanceData = ships.map((ship) => ({
-    name: ship.name.split(' ').pop(), // Get last word of ship name
-    uptime: 95 + Math.random() * 5,
-    alerts: Math.floor(Math.random() * 8) + 1,
-    cameras: ship.cameras_installed || 0
-  }))
+  // const fleetPerformanceData = ships.map((ship) => ({
+  //   name: ship.name.split(' ').pop(), // Get last word of ship name
+  //   uptime: 95 + Math.random() * 5,
+  //   alerts: Math.floor(Math.random() * 8) + 1,
+  //   cameras: ship.cameras_installed || 0
+  // }))
+
+  // Using static mock data for demonstration
+  const fleetPerformanceData = [
+  { name: 'MV Tønsberg', uptime: 97.3 , alerts: 2, cameras: 6},
+  { name: 'Figaro Vehicle Carrier', uptime: 96.1 , alerts: 1, cameras: 5},
+  { name: 'Morning Crown', uptime: 94.4 , alerts: 3, cameras: 4},
+  { name: 'My Morning Crown', uptime: 95.8 , alerts: 2, cameras: 6},
+  { name: 'Titan', uptime: 95.2 , alerts: 1, cameras: 5},
+];
+
 
   return (
     <div className='space-y-6'>

@@ -6,6 +6,7 @@ import { useSession } from 'next-auth/react'
 import TopNavbar from '@/components/_App/TopNavbar'
 import LeftSidebar from '@/components/_App/LeftSidebar'
 import Footer from '../common/Footer'
+import style from './Layout.module.css'
 
 const Layout = ({ children }) => {
   const router = useRouter()
@@ -35,6 +36,7 @@ const Layout = ({ children }) => {
       </Head>
 
       <div
+        className={style.scrollbarwidth}
         style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}
       >
         <div

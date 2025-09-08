@@ -282,33 +282,33 @@ export default function ReferenceMasterCurd() {
               </Button>
             </Box>
           </Box>
-          <Box>
-            <Grid container spacing={2}>
+          <Box fullWidth>
+           
               <Grid item xs={12}>
-                <TableContainer>
+                <TableContainer fullWidth>
                   <Table>
                     <TableHead>
                       <TableRow>
                         <TableCell>Code</TableCell>
                         <TableCell>Name</TableCell>
-                        <TableCell>Description</TableCell>
+                        {/* <TableCell>Description</TableCell> */}
                         <TableCell>Status</TableCell>
-                        <TableCell>Sort Order</TableCell>
-                        <TableCell>Related Value</TableCell>
+                        {/* <TableCell>Sort Order</TableCell>
+                        <TableCell>Related Value</TableCell> */}
                         <TableCell>Actions</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
                       {tableData.map((row, index) => (
-                        <TableRow key={index} dense>
+                        <TableRow key={index}>
                           <TableCell>{row.code}</TableCell>
                           <TableCell>{row.name}</TableCell>
-                          <TableCell>{row.description}</TableCell>
+                          {/* <TableCell>{row.description}</TableCell> */}
                           <TableCell>
                             {row.isActive ? 'Active' : 'Inactive'}
                           </TableCell>
-                          <TableCell>{row.sortOrder}</TableCell>
-                          <TableCell>{row.relatedValue}</TableCell>
+                          {/* <TableCell>{row.sortOrder}</TableCell>
+                          <TableCell>{row.relatedValue}</TableCell> */}
                           <TableCell>
                             <Button
                               startIcon={<EditIcon />}
@@ -331,7 +331,7 @@ export default function ReferenceMasterCurd() {
                   </Table>
                 </TableContainer>
               </Grid>
-            </Grid>
+          
             <Box sx={{ display: 'flex', p: '10px' }}>
               <Box sx={{ flexGrow: 1 }}>
                 {errorMessage && <SCErrorSpan>{errorMessage}</SCErrorSpan>}

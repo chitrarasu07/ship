@@ -16,7 +16,89 @@ export default function ShipList({
     offline: { icon: WifiOff, color: 'bg-red-100 text-red-800' }
   }
 
-  const [data, setData] = useState([])
+  // const [data, setData] = useState([])
+  // using dummy data for now
+ const [data, setData] = useState([
+  {
+    id: 1,
+    name: "MV Tønsberg",
+    imo_number: "9695910",
+    flag: "Norway",
+    status: "active",
+    ship_type: "RoRo",
+    current_location: { port: "Oslo", country: "Norway" },
+    cameras_installed: 6,
+    last_update: "2025-09-07 14:00:00",
+    images: "./ship images/Car carrier.jpg",
+  },
+  {
+    id: 2,
+    name: "Figaro Vehicle Carrier",
+    imo_number: "9634560",
+    flag: "Norway",
+    status: "active",
+    ship_type: "RoRo",
+    current_location: { port: "Bergen", country: "Norway" },
+    cameras_installed: 5,
+    last_update: "2025-09-06 10:30:00",
+    images: "./ship images/ship images-2.jpg",
+  },
+  {
+    id: 3,
+    name: "CLDN Group's MV Celine",
+    imo_number: "9701123",
+    flag: "Luxembourg",
+    status: "active",
+    ship_type: "RoRo",
+    current_location: { port: "Luxembourg City", country: "Luxembourg" },
+    cameras_installed: 7,
+    last_update: "2025-09-05 09:20:00",
+    images: "./ship images/ship images-3.jpg",
+  },
+  {
+    id: 4,
+    name: "Eco Livorno",
+    imo_number: "9687450",
+    flag: "Italy",
+    status: "maintenance",
+    ship_type: "RoRo",
+    current_location: { port: "Livorno", country: "Italy" },
+    cameras_installed: 8,
+    last_update: "2025-09-04 12:10:00",
+    images: "./ship images/ship images-2.jpg",
+  },
+  {
+    id: 5,
+    name: "Morning Crown",
+    imo_number: "9656740",
+    flag: "Bahamas",
+    status: "offline",
+    ship_type: "RoRo",
+    current_location: { port: "Nassau", country: "Bahamas" },
+    cameras_installed: 6,
+    last_update: "2025-09-03 15:25:00",
+    images: "./ship images/Car carrier.jpg",
+  },
+  {
+    id: 6,
+    name: "MV Morning Crown",
+    imo_number: "9656456",
+    flag: "italy",
+    status: "in_port",
+    ship_type: "RoRo",
+    current_location: { port:"Rotterdam", country: "Netherlands" },
+    cameras_installed: 6,
+    last_update: "2025-09-03 15:25:00",
+    images: "./ship images/MV-Tonsberg.webp",
+  }
+])
+
+
+
+
+
+
+
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
@@ -26,10 +108,10 @@ export default function ShipList({
   const fetchData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get('/no-guards/entity', { params: { limit: 10, pageNo: 1 } })
-      setData(response.data.entities)
-
-      console.log('Fetched entities:', response.data.entities)
+      // const response = await axios.get('/no-guards/entity', { params: { limit: 10, pageNo: 1 } })
+      // setData(response.data.entities)
+      setData(data)
+      console.log('Fetched entities:', data)
     } catch (error) {
       console.error('Error fetching data', error)
     } finally {

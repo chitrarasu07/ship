@@ -23,8 +23,8 @@ export default function FleetMetrics({ ships, alerts, cameraData, isLoading }) {
     (alert) => alert.severity === 'critical' || alert.severity === 'emergency'
   ).length
   const totalAlerts = alerts.length
-  const uptime =
-    ships.length > 0 ? ((activeShips / ships.length) * 100).toFixed(1) : 0
+  // const uptime = ships.length > 0 ? ((activeShips / ships.length) * 100).toFixed(1) : 0
+    const uptime = '96.6' // Mock data
   const avgResponseTime = '3.2' // Mock data
   const detectionAccuracy =
     cameraData.length > 0
@@ -34,7 +34,7 @@ export default function FleetMetrics({ ships, alerts, cameraData, isLoading }) {
           100
         ).toFixed(1)
       : 0
-  const incidentReduction = '15' // Mock data
+  const incidentReduction = '90' // Mock data
 
   const metrics = [
     {
@@ -48,8 +48,10 @@ export default function FleetMetrics({ ships, alerts, cameraData, isLoading }) {
     },
     {
       title: 'Active Ships',
-      value: activeShips,
-      total: ships.length,
+      // value: activeShips,
+      // total: ships.length,
+      value: '3', // Mock data
+      total: '6', // Mock data
       icon: Ship,
       color: 'blue',
       trend: '+3 ships',
@@ -58,10 +60,11 @@ export default function FleetMetrics({ ships, alerts, cameraData, isLoading }) {
     },
     {
       title: 'Camera Network',
-      value: totalCameras,
+      // value: totalCameras,
+      value: '24', // Mock data
       icon: Camera,
       color: 'purple',
-      trend: '98.5%',
+      trend: '96.5%',
       trendUp: true,
       description: 'Online and monitoring'
     },
@@ -76,7 +79,8 @@ export default function FleetMetrics({ ships, alerts, cameraData, isLoading }) {
     },
     {
       title: 'Detection Accuracy',
-      value: `${detectionAccuracy}%`,
+      // value: `${detectionAccuracy}%`,
+      value: '96.5%', // Mock data
       icon: Shield,
       color: 'green',
       trend: '+1.2%',
@@ -85,8 +89,10 @@ export default function FleetMetrics({ ships, alerts, cameraData, isLoading }) {
     },
     {
       title: 'Critical Alerts',
-      value: criticalAlerts,
-      total: totalAlerts,
+      // value: criticalAlerts,
+      // total: totalAlerts,
+      value: '3', // Mock data
+      total: '8', // Mock data
       icon: AlertTriangle,
       color: 'red',
       trend: '-5 alerts',

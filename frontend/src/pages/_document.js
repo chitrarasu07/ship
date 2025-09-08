@@ -8,7 +8,7 @@ class MyDocument extends Document {
     return (
       <Html dir={dir} lang={locale}>
         <Head>
-          <link rel='icon' href='/logo/logo D.png'/>
+          <link rel='icon' href='../logo/D-logo.png' />
         </Head>
         <body>
           <Main />

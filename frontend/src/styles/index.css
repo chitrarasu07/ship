@@ -2,7 +2,12 @@
 
 * {
   font-family: 'Inter';
+  scrollbar-width: none;
 }
+
+/* .css-4dvpq5{
+  scrollbar-width: none;
+} */
 
 ._styles-module__test__3ybTi {
   margin: 2em;

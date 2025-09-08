@@ -19,120 +19,208 @@ import UseCaseAnalytics from '@/components/dashboard/UseCaseAnalytics'
 import IncidentResponseMetrics from '../components/dashboard/IncidentResponseMatrics'
 import axios from 'axios'
 
-
 export default function Dashboard() {
-  const [ships, setShips] = useState([])
+  // const [ships, setShips] = useState([])
   // const [alerts, setAlerts] = useState([])
   // const [cameraData, setCameraData] = useState([])
 
-
-//   const [ships, setShips] = useState([
-//   { id: 1, name: "MV northern Star ", status: "active", location: "Singapore" ,camera_installed:"8"},
-//   { id: 2, name: "MV Atlantic poineer", status: "in_port", location: "Rotterdam" ,camera_installed:"5"},
-//   { id: 3, name: "MV Blue Whale", status: "maintenance", location: "Shanghai" ,camera_installed:"3"},
-//   { id: 4, name: "Ocean Queen", status: "active", location: "Long Beach" ,camera_installed:"10"},
-//   { id: 5, name: "Ocean King", status: "active", location: "Los Angeles" ,camera_installed:"7"},
-// ]);
-
-const [alerts, setAlerts] = useState([
-  {
-    title: "Fire detected in engine room",
-    description: "Temperature and smoke sensors have detected a possible fire in the engine room. Immediate evacuation and fire suppression required.",
-    shipName: "MV Northern Star",
-    location: "Engine Room - Deck 2",
-    severity: "emergency",
-    created_date: "2025-08-13T09:30:00Z"
-  },
-  {
-    title: "Smoke detected in cargo hold",
-    description: "Smoke detection system has triggered an alert in Cargo Hold A. Investigate for potential fire or overheating equipment.",
-    shipName: "MV Atlantic Pioneer",
-    location: "Cargo Hold A - Deck 1",
-    severity: "critical",
-    created_date: "2025-08-13T08:45:00Z"
-  },
-
-  {
-    title: "Smoke detected in crew quarters",
-    description: "Smoke alarms have been triggered in Crew Quarters B. Check for possible short circuits or small fires.",
-    shipName: "Ocean Queen",
-    location: "Crew Quarters B - Deck 4",
-    severity: "critical",
-    created_date: "2025-08-13T06:50:00Z"
-  },
-  {
-    title: "Engine overheating",
-    description: "The engine temperature has exceeded safe limits",
-    shipName: "MV Blue Whale",
-    location: "Ship ID: 1 - Deck 5",
-    severity: "critical",
-    created_date: "2025-08-13T09:30:00Z"
-  },
-  {
-    title: "High temperature warning in kitchen",
-    description: "Sensors detected unusually high temperatures in the galley area, possible electrical overheating.",
-    shipName: "MV Blue Whale",
-    location: "Galley - Deck 3",
-    severity: "medium",
-    created_date: "2025-08-13T07:15:00Z"
-  },
+  const [ships, setShips] = useState([
     {
-    title: "High temperature warning in kitchen",
-    description: "Sensors detected unusually high temperatures in the galley area, possible electrical overheating.",
-    shipName: "MV Blue Whale",
-    location: "Galley - Deck 3",
-    severity: "medium",
-    created_date: "2025-08-13T07:15:00Z"
-  },
-  
-])
+      id: 1,
+      name: 'MV Tønsberg ',
+      status: 'active',
+      location: 'Singapore',
+      cameras_installed: '8'
+    },
+    {
+      id: 2,
+      name: 'MV Morning Crown',
+      status: 'in_port',
+      location: 'Rotterdam',
+      cameras_installed: '5'
+    },
+    {
+      id: 3,
+      name: 'Eco Livorno',
+      status: 'maintenance',
+      location: 'Shanghai',
+      cameras_installed: '3'
+    },
+    {
+      id: 4,
+      name: 'Figaro Vehicle Carrier',
+      status: 'active',
+      location: 'Long Beach',
+      cameras_installed: '10'
+    },
+    {
+      id: 5,
+      name: "CLDN Group's MV Celine",
+      status: 'active',
+      location: 'Los Angeles',
+      cameras_installed: '7'
+    },
+    {
+      id: 6,
+      name: 'Morning Crown',
+      status: 'offline',
+      location: 'Shanghai',
+      cameras_installed: '3'
+    },
+  ])
 
+  const [alerts, setAlerts] = useState([
+    {
+      title: 'Fire detected in engine room',
+      description:
+        'Temperature and smoke sensors have detected a possible fire in the engine room. Immediate evacuation and fire suppression required.',
+      shipName: 'MV Tønsberg',
+      location: 'Engine Room - Deck 2',
+      severity: 'emergency',
+      created_date: '2025-08-13T09:30:00Z'
+    },
+    {
+      title: 'Fire detected in Deck 4',
+      description:
+        'Temperature and smoke sensors have detected a possible fire in Deck 4. Immediate evacuation and fire suppression required.',
+      shipName: 'Figaro Vehicle Carrier',
+      location: 'Deck 4 - Deck 4',
+      severity: 'emergency',
+      created_date: '2025-08-13T09:30:00Z'
+    },
+    {
+      title: 'Smoke detected in cargo hold',
+      description:
+        'Smoke detection system has triggered an alert in Cargo Hold A. Investigate for potential fire or overheating equipment.',
+      shipName: "CLDN Group's MV Celine",
+      location: 'Cargo Hold A - Deck 1',
+      severity: 'critical',
+      created_date: '2025-08-13T08:45:00Z'
+    },
 
-// usecase analysis data
-const [cameraData, setCameraData] = useState([
-  { use_case: "Fire_Detection", confidence_score: 0.98, alert_level: "critical" },
-  { use_case: "Fire_Detection", confidence_score: 0.98, alert_level: "critical" },
-  { use_case: "Fire_Detection", confidence_score: 0.98, alert_level: "critical" },
-  { use_case: "Smoke_Detection", confidence_score: 0.95, alert_level: "critical" },
-  { use_case: "Smoke_Detection", confidence_score: 0.97, alert_level: "critical" },
-  { use_case: "PPT_KIT_Detection", confidence_score: 0.89, alert_level: "emergency" },
-  { use_case: "PPT_KIT_Detection", confidence_score: 0.90, alert_level: "emergency" },
-  { use_case: "Anomaly_Detection", confidence_score: 0.87, alert_level: "critical" },
-  { use_case: "No_Cross_Detection", confidence_score: 0.86, alert_level: "medium" }
-]);
+    {
+      title: 'Smoke detected in crew quarters',
+      description:
+        'Smoke alarms have been triggered in Crew Quarters B. Check for possible short circuits or small fires.',
+      shipName: 'MV Morning Crown',
+      location: 'Crew Quarters B - Deck 4',
+      severity: 'critical',
+      created_date: '2025-08-13T06:50:00Z'
+    },
+    {
+      title: 'Engine overheating',
+      description: 'The engine temperature has exceeded safe limits',
+      shipName: 'MV Blue Whale',
+      location: 'Ship ID: 1 - Deck 5',
+      severity: 'critical',
+      created_date: '2025-08-13T09:30:00Z'
+    },
+    {
+      title: 'High temperature warning in kitchen',
+      description:
+        'Sensors detected unusually high temperatures in the galley area, possible electrical overheating.',
+      shipName: "CLDN Group's MV Celine",
+      location: 'Galley - Deck 3',
+      severity: 'medium',
+      created_date: '2025-08-13T07:15:00Z'
+    },
+    {
+      title: 'High temperature warning in kitchen',
+      description:
+        'Sensors detected unusually high temperatures in the galley area, possible electrical overheating.',
+      shipName: 'MV Tønsberg',
+      location: 'Galley - Deck 3',
+      severity: 'medium',
+      created_date: '2025-08-13T07:15:00Z'
+    }
+  ])
 
-// dummy metrics data for incident response
-const dummyMetrics = {
-  avgResponseTime: {
-    value: 120,
-    trend: "up",
-    change: "15 mins since last week"
-  },
-  resolutionRate: {
-    value: "75%",
-    resolved: 150,
-    pending: 50
-  },
-  preventionRate: {
-    value: "80%",
-    change: "10% since last month"
+  // usecase analysis data
+  const [cameraData, setCameraData] = useState([
+    {
+      use_case: 'Fire_Detection',
+      confidence_score: 0.98,
+      alert_level: 'critical'
+    },
+    {
+      use_case: 'Fire_Detection',
+      confidence_score: 0.98,
+      alert_level: 'critical'
+    },
+    {
+      use_case: 'Fire_Detection',
+      confidence_score: 0.98,
+      alert_level: 'critical'
+    },
+    {
+      use_case: 'Fire_Detection',
+      confidence_score: 0.98,
+      alert_level: 'emergency'
+    },
+    {
+      use_case: 'Fire_Detection',
+      confidence_score: 0.98,
+      alert_level: 'emergency'
+    },
+    {
+      use_case: 'Smoke_Detection',
+      confidence_score: 0.95,
+      alert_level: 'critical'
+    },
+    {
+      use_case: 'Smoke_Detection',
+      confidence_score: 0.97,
+      alert_level: 'critical'
+    },
+    {
+      use_case: 'PPT_KIT_Detection',
+      confidence_score: 0.89,
+      alert_level: 'emergency'
+    },
+    {
+      use_case: 'PPT_KIT_Detection',
+      confidence_score: 0.9,
+      alert_level: 'emergency'
+    },
+    {
+      use_case: 'Anomaly_Detection',
+      confidence_score: 0.87,
+      alert_level: 'critical'
+    },
+    {
+      use_case: 'No_Cross_Detection',
+      confidence_score: 0.86,
+      alert_level: 'medium'
+    }
+  ])
+
+  // dummy metrics data for incident response
+  const dummyMetrics = {
+    avgResponseTime: {
+      value: 120,
+      trend: 'up',
+      change: '15 mins since last week'
+    },
+    resolutionRate: {
+      value: '75%',
+      resolved: 8,
+      pending: 3
+    },
+    preventionRate: {
+      value: '90%%',
+      change: '10% since last month'
+    }
   }
-};
 
-
-// ..........end 
-
-
+  // ..........end
 
   const [activeView, setActiveView] = useState('global')
   const [isLoading, setIsLoading] = useState(true)
-  const [incidentMetrics, setIncidentMetrics] = useState({});
+  const [incidentMetrics, setIncidentMetrics] = useState({})
 
   useEffect(() => {
     loadDashboardData()
   }, [])
-
-
 
   // const loadDashboardData = async () => {
   //   setIsLoading(true)
@@ -150,56 +238,62 @@ const dummyMetrics = {
   //   setIsLoading(false)
   // }
 
-
-// demo purpose  after that we will remove this and use the above loadDashboardData function
+  // demo purpose  after that we will remove this and use the above loadDashboardData function
   const loadDashboardData = async () => {
-  setIsLoading(true)
-  try {
-    // const shipsData = [] // API call here later
-    const shipsResponse = await axios.get('/no-guards/entity', { params: { limit: 50, pageNo: 1 } });
-    
-    // Adjust this line according to your actual API response structure
-    const shipsData = shipsResponse.data.entities || shipsResponse.data || [];
+    setIsLoading(true)
+    try {
+      // const shipsData = [] // API call here later
+      // const shipsResponse = await axios.get('/no-guards/entity', { params: { limit: 50, pageNo: 1 } });
 
-    setShips(shipsData);
-    const alertsData = []
-    const cameraDataResults = await axios.get('/camera', { params: { limit: 50, pageNo: 1 } });
-    // const cameraDataResults = []
-    // setIncidentMetrics(incidentResponseMetrics);
+      // // Adjust this line according to your actual API response structure
+      // const shipsData = shipsResponse.data.entities || shipsResponse.data || [];
 
-    if (alertsData.length > 0) setAlerts(alertsData)
-    if (cameraDataResults.length > 0) setCameraData(cameraDataResults)
-      console.log("ships data", shipsData);
-  } catch (error) {
-    console.error('Error loading dashboard data:', error)
+      setShips(ships)
+      const alertsData = []
+      const cameraDataResults = await axios.get('/camera', {
+        params: { limit: 50, pageNo: 1 }
+      })
+      // const cameraDataResults = []
+      // setIncidentMetrics(incidentResponseMetrics);
+
+      if (alertsData.length > 0) setAlerts(alertsData)
+      if (cameraDataResults.length > 0) setCameraData(cameraDataResults)
+      console.log('ships data', ships)
+    } catch (error) {
+      console.error('Error loading dashboard data:', error)
+    }
+    setIsLoading(false)
   }
-  setIsLoading(false)
-}
-// ............................
+  // ............................
 
   const criticalAlerts = alerts.filter(
-    (alert) => alert.severity === 'critical' || alert.severity === 'emergency' || alert.severity === 'medium'
+    (alert) =>
+      alert.severity === 'critical' ||
+      alert.severity === 'emergency' ||
+      alert.severity === 'medium'
   )
   // i have
-  const activeShips = ships.filter((ship) => ship.status === 'active' || ship.status === 'in_port')
+  const activeShips = ships.filter(
+    (ship) => ship.status === 'active' || ship.status === 'in_port'
+  )
 
   // this is for time update i added
-  const [time, setTime] = useState(new Date());
+  const [time, setTime] = useState(new Date())
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setTime(new Date());
-    }, 1000); // update every second
+      setTime(new Date())
+    }, 1000) // update every second
 
-    return () => clearInterval(timer);
-  }, []);
+    return () => clearInterval(timer)
+  }, [])
 
   // ..........
   return (
-    <div className='p-6 bg-gradient-to-br from-slate-50 to-slate-100 min-h-screen'>
+    <div className='p-6 bg-gradient-to-br from-slate-50 to-slate-100 min-h-screen '>
       <div className='max-w-7xl mx-auto space-y-6'>
         {/* Header */}
-        <div className='flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4'>
+        <div className='flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 scrollbarwidth-none '>
           <div>
             <h1 className='text-3xl font-bold text-slate-900'>
               Vision AI Dashboard
@@ -288,7 +382,7 @@ const dummyMetrics = {
               <div className='space-y-8 space-x-8'>
                 <RecentAlerts alerts={criticalAlerts} />
                 <UseCaseAnalytics cameraData={cameraData} />
-              </div> 
+              </div>
             </div>
           </TabsContent>
 
@@ -298,7 +392,7 @@ const dummyMetrics = {
               <div className='lg:col-span-2'>
                 <ShipOverview ships={ships} detailed={true} />
               </div>
-              <div  className='lg:col-span-2'>
+              <div className='lg:col-span-2'>
                 {/* <RecentAlerts alerts={alerts.filter((a) => a.ship_id)} /> */}
                 <RecentAlerts alerts={criticalAlerts} />
               </div>

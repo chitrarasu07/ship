@@ -26,10 +26,10 @@ export default function ReferenceValueForm(props) {
   const defaultValue = {
     code: '',
     name: '',
-    sortOrder: 99,
+    sortOrder: 0,
     isActive: true,
-    description: '',
-    relatedValue: ''
+    // description: '',
+    // relatedValue: ''
   }
   const [formData, setFormData] = useState(defaultValue)
   const [errorField, setErrorField] = useState({
@@ -81,14 +81,14 @@ export default function ReferenceValueForm(props) {
   const handleSave = async () => {
     formData.code = formData.code.trim()
     formData.name = formData.name.trim()
-    formData.description = (formData.description || '').trim()
+    // formData.description = (formData.description || '').trim()
     setErrorField({
       code: !formData.code ? 'Enter the valid Data' : '',
       name: !formData.name ? 'Enter the valid Data' : '',
       sortOrder:
         formData.sortOrder < 0 ? 'Please enter sort order more than 0' : ''
     })
-    if (!formData.code || !formData.name || formData.sortOrder < 0) return
+    if (!formData.code || !formData.name) return
 
     const matched = (referenceValues || []).find(
       (e, i) => e.code == formData.code && rowIndex != i
@@ -157,7 +157,7 @@ export default function ReferenceValueForm(props) {
             }
             label='Active'
           />
-          <InputTypeNumber
+          {/* <InputTypeNumber
             label='Sort Order'
             fullWidth
             name='sortOrder'
@@ -166,14 +166,14 @@ export default function ReferenceValueForm(props) {
               console.log('valur....', value)
               handleChange({ target: { name: 'sortOrder', value } })
             }}
-          />
-          <TextField
+          /> */}
+          {/* <TextField
             label='Related Value'
             fullWidth
             name='relatedValue'
             value={formData.relatedValue}
             onChange={handleChange}
-          />
+          /> */}
         </Box>
       </DialogContent>
       <DialogActions>

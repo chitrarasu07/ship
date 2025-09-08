@@ -28,24 +28,38 @@ export default function AlertAnalytics({ alerts, timeRange }) {
     return acc
   }, {})
 
-  const chartData = Object.entries(alertsByType).map(([type, count]) => ({
-    name: type.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase()),
-    value: count
-  }))
+  // const chartData = Object.entries(alertsByType).map(([type, count]) => ({
+  //   name: type.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase()),
+  //   value: count
+  // }))
+  // Using static mock data for demonstration
+  const chartData = [
+    { name: 'Fire Detection', value: 8 },
+    { name: 'Smoke Detection', value: 5 },
+    { name: 'PPT Kits', value: 4 },
+    { name: 'No Cross', value: 3 }
+  ]
 
-  const severityData = Object.entries(alertsBySeverity).map(
-    ([severity, count]) => ({
-      name: severity,
-      value: count
-    })
-  )
+  // const severityData = Object.entries(alertsBySeverity).map(
+  //   ([severity, count]) => ({
+  //     name: severity,
+  //     value: count
+  //   })
+  // )
+  // Using static mock data for demonstration
+  const severityData = [
+    { name: 'Critical', value: 6 },
+    { name: 'High', value: 4 },
+    { name: 'Medium', value: 5 },
+    { name: 'Low', value: 3 }
+  ]
 
   const COLORS = ['#3B82F6', '#EF4444', '#F59E0B', '#10B981', '#8B5CF6']
 
   const resolvedAlerts = alerts.filter((a) => a.status === 'resolved').length
-  const resolutionRate =
-    alerts.length > 0 ? ((resolvedAlerts / alerts.length) * 100).toFixed(1) : 0
-
+  // const resolutionRate =
+  //   alerts.length > 0 ? ((resolvedAlerts / alerts.length) * 100).toFixed(1) : 0
+const resolutionRate = '80' // Mock data
   return (
     <div className='space-y-6'>
       {/* Alert Summary Cards */}
@@ -58,7 +72,8 @@ export default function AlertAnalytics({ alerts, timeRange }) {
           </CardHeader>
           <CardContent>
             <div className='text-2xl font-bold text-slate-900'>
-              {alerts.length}
+              {/* {alerts.length}  */}
+              20
             </div>
             <p className='text-sm text-green-600 flex items-center gap-1'>
               <TrendingUp className='w-3 h-3' />
@@ -74,9 +89,10 @@ export default function AlertAnalytics({ alerts, timeRange }) {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className='text-2xl font-bold text-slate-900'>
+            {/* <div className='text-2xl font-bold text-slate-900'>
               {resolutionRate}%
-            </div>
+            </div> */}
+            <div className='text-2xl font-bold text-slate-900'>80%</div>
             <Progress value={parseFloat(resolutionRate)} className='mt-2' />
           </CardContent>
         </Card>

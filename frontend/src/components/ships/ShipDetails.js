@@ -28,8 +28,6 @@ const DetailItem = ({ icon: Icon, label, value }) => (
 )
 
 export default function ShipDetails({ ship, alerts, isLoading }) {
-
-
   if (isLoading) {
     return (
       <div className='p-6 space-y-6'>
@@ -109,48 +107,49 @@ export default function ShipDetails({ ship, alerts, isLoading }) {
         />
       </div>
 
-      <Tabs defaultValue='alerts' className='w-full'>
+      <Tabs defaultValue='Ship Images' className='w-full'>
         <TabsList>
-          <TabsTrigger value='alerts' className='flex items-center gap-1'>
+          {/* <TabsTrigger value='alerts' className='flex items-center gap-1'>
             <AlertTriangle className='w-4 h-4' />
             Alerts
             {alerts.length > 0 && (
               <Badge className='ml-2'>{alerts.length}</Badge>
             )}
-          </TabsTrigger>
-          <TabsTrigger value='cameras' className='flex items-center gap-1'>
+          </TabsTrigger> */}{' '}
+          {/* Temporarily hiding Alerts tab */}
+          <TabsTrigger value='Ship Images' className='flex items-center gap-1'>
             <Camera className='w-4 h-4' />
-            Cameras
+            Ship Images
           </TabsTrigger>
-          <TabsTrigger value='reports' className='flex items-center gap-1'>
+          {/* <TabsTrigger value='reports' className='flex items-center gap-1'>
             <FileText className='w-4 h-4' />
             Reports
-          </TabsTrigger>
+           </TabsTrigger>
+           */}
         </TabsList>
-        <TabsContent value='alerts'>
+        {/* <TabsContent value='alerts'>
           <RecentAlerts alerts={alerts} />
-        </TabsContent>
-        <TabsContent value='cameras'>
+        </TabsContent> */}
+        <TabsContent value='Ship Images'>
           <Card>
             <CardHeader>
-              <CardTitle>Camera Feeds</CardTitle>
+              <CardTitle>{ship.name} - Images</CardTitle>
             </CardHeader>
-            <CardContent className='text-center text-slate-500 py-12'>
-              <Camera className='w-16 h-16 text-slate-300 mx-auto mb-4' />
-              <p>Live camera feeds will be displayed here.</p>
-              <p className='text-sm'>(Feature in development)</p>
-            </CardContent>
-          </Card>
-        </TabsContent>
-        <TabsContent value='reports'>
-          <Card>
-            <CardHeader>
-              <CardTitle>Ship-Specific Reports</CardTitle>
-            </CardHeader>
-            <CardContent className='text-center text-slate-500 py-12'>
-              <FileText className='w-16 h-16 text-slate-300 mx-auto mb-4' />
-              <p>Custom reports for this ship will be available here.</p>
-              <p className='text-sm'>(Feature in development)</p>
+            <CardContent>
+              {ship.images ? (
+                <div className='w-full flex justify-center'>
+                  <img
+                    src={ship.images}
+                    alt={ship.name}
+                    className='rounded-xl shadow-md border w-xl max-w-xl object-cover'
+                  />
+                </div>
+              ) : (
+                <div className='text-center text-slate-500 py-12'>
+                  <Camera className='w-16 h-16 text-slate-300 mx-auto mb-4' />
+                  <p>No ship images available for this ship.</p>
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>

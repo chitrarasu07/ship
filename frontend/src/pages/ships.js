@@ -28,48 +28,12 @@ export default function ShipsPage() {
   setIsLoading(true)
   setError(null)
   try {
-    const res = await axios.get('/no-guards/entity', { params: { limit: 20, pageNo: 1 } })
-    const shipsData = res.data.entities || []   // ✅ fix key
+    // const res = await axios.get('/no-guards/entity', { params: { limit: 20, pageNo: 1 } })
+    // const shipsData = res.data.entities || []   // ✅ fix key
     // const alertsData = res.data.alerts || []
     // dummy data and after that will reomve it , use above alertsdata
-    const alertsData = [
-  {
-    id: 1,
-    title: 'Engine Overheating',
-    description: 'Engine temperature exceeded safe limits.',
-    severity: 'critical',
-    status: 'active',
-    ship_id: 1,
-    location: 'Engine Room',
-    videoUrl: '../videos/fire-detect-1.mp4',
-    created_date: new Date().toISOString()
-  },
-  {
-    id: 2,
-    title: 'Hull Breach Detected',
-    description: 'Minor breach detected near cargo bay.',
-    severity: 'high',
-    status: 'acknowledged',
-    ship_id: 2,
-    location: 'Cargo Bay',
-    videoUrl: '../videos/fire-detect-2.mp4',
-    created_date: new Date(Date.now() - 3600 * 1000).toISOString() // 1 hour ago
-  },
-  {
-    id: 3,
-    title: 'Navigation System Failure',
-    description: 'Autopilot system malfunctioned.',
-    severity: 'emergency',
-    status: 'resolved',
-    ship_id: 1,
-    location: 'Bridge',
-    videoUrl: '../videos/fire-detect-3.mp4',
-    created_date: new Date(Date.now() - 24 * 3600 * 1000).toISOString() // 1 day ago
-  }
-];
-
-  
-
+    const alertsData = []
+    const shipsData = []
     setShips(shipsData)
     setFilteredShips(shipsData)
     setAlerts(alertsData)

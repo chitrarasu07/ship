@@ -14,11 +14,13 @@ import {
   Search,
   Filter,
   Bell,
-  Play
+  Play,
+  Ship
 } from 'lucide-react'
 import { format } from 'date-fns'
-import { Dialog, DialogContent, DialogTitle } from '@mui/material'
+import { Dialog, DialogContent, DialogTitle, Typography } from '@mui/material'
 import { DialogHeader } from '@/components/ui/dialog'
+import EntityAutocomplete from '@/components/autocomplete/entityAutocomplete'
 
 export default function AlertsPage() {
   const [alerts, setAlerts] = useState([])
@@ -27,6 +29,134 @@ export default function AlertsPage() {
   const [activeTab, setActiveTab] = useState('all')
   const [isLoading, setIsLoading] = useState(true)
   const [selectedAlert, setSelectedAlert] = useState(null)
+  const [selectedShip, setSelectedShip] = useState(null)
+
+  // dummy data 
+  const alertsData = [
+  {
+    id: 1,
+    title: 'Fire Detected in Engine Room',
+    description: 'Flames detected in the engine room. Immediate firefighting required.',
+    severity: 'emergency',
+    status: 'active',
+    ship_id: 1,
+    location: 'Engine Room',
+    videoUrl: '../videos/fire-detect-1.mp4',
+    created_date: new Date().toISOString()
+  },
+  {
+    id: 2,
+    title: 'Smoke in Cargo Hold',
+    description: 'Thick smoke detected in the cargo hold area.',
+    severity: 'emergency',
+    status: 'acknowledged',
+    ship_id: 2,
+    location: 'Cargo Hold',
+    videoUrl: '../videos/fire-detect-1.mp4',
+    created_date: new Date(Date.now() - 3600 * 1000).toISOString()
+  },
+ 
+  {
+    id: 4,
+    title: 'FIRE detected in Deck2 Area',
+    description: 'Smoke and water leakage detected in the lower deck.',
+    severity: 'emergency',
+    status: 'active',
+    ship_id: 4,
+    location: 'Lower Deck',
+    videoUrl: '../videos/fire-detect-1.mp4',
+    created_date: new Date(Date.now() - 30 * 60 * 1000).toISOString()
+  },
+  
+  {
+    id: 5,
+    title: 'Flooding with Smoke in Lower Deck',
+    description: 'Smoke and water leakage detected in the lower deck.',
+    severity: 'emergency',
+    status: 'active',
+    ship_id: 4,
+    location: 'Lower Deck',
+    videoUrl: '../videos/fire-detect-1.mp4',
+    created_date: new Date(Date.now() - 30 * 60 * 1000).toISOString()
+  },
+  {
+    id: 6,
+    title: 'Missing PPE Kit',
+    description: 'Crew reported missing PPE kit during safety drill.',
+    severity: 'critical',
+    status: 'acknowledged',
+    ship_id: 2,
+    location: 'Safety Locker',
+    videoUrl: '../videos/fire-detect-1.mp4',
+    created_date: new Date(Date.now() - 3 * 3600 * 1000).toISOString()
+  },
+  {
+    id: 7,
+    title: 'Crew Without PPE Detected',
+    description: 'Camera detected crew member working without safety PPE kit.',
+    severity: 'medium',
+    status: 'active',
+    ship_id: 5,
+    location: 'Main Deck',
+    videoUrl: '../videos/fire-detect-1.mp4',
+    created_date: new Date(Date.now() - 12 * 3600 * 1000).toISOString()
+  },
+  {
+    id: 8,
+    title: 'Smoke in Accommodation Area',
+    description: 'Smoke detected in crew accommodation block.',
+    severity: 'high',
+    status: 'resolved',
+    ship_id: 3,
+    location: 'Accommodation Area',
+    videoUrl: '../videos/fire-detect-1.mp4',
+    created_date: new Date(Date.now() - 6 * 3600 * 1000).toISOString()
+  },
+  {
+    id: 9,
+    title: 'Fire Drill Failed',
+    description: 'Crew failed to assemble at muster station with PPE kit.',
+    severity: 'critical',
+    status: 'active',
+    ship_id: 6,
+    location: 'Muster Station',
+    videoUrl: '../videos/fire-detect-1.mp4',
+    created_date: new Date(Date.now() - 45 * 60 * 1000).toISOString()
+  },
+  {
+    id: 10,
+    title: 'Explosion Risk from Gas Leak',
+    description: 'Gas leak with fire ignition risk detected in storage unit.',
+    severity: 'high',
+    status: 'active',
+    ship_id: 7,
+    location: 'Storage Unit',
+    videoUrl: '../videos/fire-detect-1.mp4',
+    created_date: new Date(Date.now() - 15 * 60 * 1000).toISOString()
+  },
+  {
+    id: 11,
+    title: 'Fire in Kitchen Galley',
+    description: 'Cooking fire reported in the kitchen galley.',
+    severity: 'critical',
+    status: 'active',
+    ship_id: 3,
+    location: 'Kitchen Galley',
+    videoUrl: '../videos/fire-detect-1.mp4',
+    created_date: new Date(Date.now() - 2 * 3600 * 1000).toISOString()
+  },
+   {
+    id: 11,
+    title: 'Fire Alarm Triggered on Bridge',
+    description: 'Automatic fire alarm triggered on the navigation bridge.',
+    severity: 'emergency',
+    status: 'resolved',
+    ship_id: 1,
+    location: 'Bridge',
+    videoUrl: '../videos/fire-detect-1.mp4',
+    created_date: new Date(Date.now() - 24 * 3600 * 1000).toISOString()
+  },
+]
 
   useEffect(() => {
     loadData()
@@ -50,50 +180,19 @@ export default function AlertsPage() {
     setIsLoading(true)
     try {
       // Dummy Alerts
-      const alertsData = [
-        {
-          id: 1,
-          title: 'Fire detected in Engine Room',
-          description: 'Fire detected in the engine room. Immediate action required.',
-          severity: 'critical',
-          status: 'active',
-          ship_id: 1,
-          location: 'Engine Room',
-          videoUrl: '../videos/fire-detect-1.mp4',
-          created_date: new Date().toISOString()
-        },
-        {
-          id: 2,
-          title: 'Hull Breach Detected',
-          description: 'Minor breach detected near cargo bay.',
-          severity: 'high',
-          status: 'acknowledged',
-          ship_id: 2,
-          location: 'Cargo Bay',
-          videoUrl: '../videos/fire-detect-1.mp4',
-          created_date: new Date(Date.now() - 3600 * 1000).toISOString() // 1hr ago
-        },
-        {
-          id: 3,
-          title: 'Navigation System Failure',
-          description: 'Autopilot system malfunctioned.',
-          severity: 'emergency',
-          status: 'resolved',
-          ship_id: 1,
-          videoUrl: '../videos/fire-detect-1.mp4',
-          created_date: new Date(Date.now() - 24 * 3600 * 1000).toISOString() // 1 day ago
-        }
-      ]
+      
+
 
       // // Dummy Ships
-      // const shipsData = [
-      //   { id: 1, name: 'SS Voyager' },
-      //   { id: 2, name: 'SS Explorer' }
-      // ]
-      const res = await axios.get('/no-guards/entity', {
-        params: { limit: 20, pageNo: 1 }
-      })
-      const shipsData = res.data.entities // ✅ fix key
+      const shipsData = [
+        { id: 1, name: 'SS Voyager' },
+        { id: 2, name: 'SS Explorer' }
+      ]
+      // this is for backend api call.............
+      // const res = await axios.get('/no-guards/entity', {
+      //   params: { limit: 20, pageNo: 1 }
+      // })
+      // const shipsData = res.data.entities // ✅ fix key
 
       setAlerts(alertsData)
       setShips(shipsData)
@@ -104,29 +203,53 @@ export default function AlertsPage() {
   }
   //.............end
 
-  const handleAcknowledge = async (alertId) => {
-    try {
-      await Alert.update(alertId, {
-        status: 'acknowledged',
-        acknowledged_by: 'current_user'
-      })
-      loadData()
-    } catch (error) {
-      console.error('Error acknowledging alert:', error)
-    }
-  }
+  // const handleAcknowledge = async (alertId) => {
+  //   try {
+  //     await Alert.update(alertId, {
+  //       status: 'acknowledged',
+  //       acknowledged_by: 'current_user'
+  //     })
+  //     loadData()
+  //   } catch (error) {
+  //     console.error('Error acknowledging alert:', error)
+  //   }
+  // }
 
-  const handleResolve = async (alertId) => {
-    try {
-      await Alert.update(alertId, {
-        status: 'resolved',
-        resolved_by: 'current_user'
-      })
-      loadData()
-    } catch (error) {
-      console.error('Error resolving alert:', error)
-    }
-  }
+  // const handleResolve = async (alertId) => {
+  //   try {
+  //     await Alert.update(alertId, {
+  //       status: 'resolved',
+  //       resolved_by: 'current_user'
+  //     })
+  //     loadData()
+  //   } catch (error) {
+  //     console.error('Error resolving alert:', error)
+  //   }
+  // }
+
+ 
+  // without api call just update the state
+  // ........... starting after dhan remove this
+  const handleAcknowledge = (alertId) => {
+  setAlerts((prevAlerts) =>
+    prevAlerts.map((alert) =>
+      alert.id === alertId
+        ? { ...alert, status: 'acknowledged', acknowledged_by: 'current_user' }
+        : alert
+    )
+  )
+}
+const handleResolve = (alertId) => {
+  setAlerts((prevAlerts) =>
+    prevAlerts.map((alert) =>
+      alert.id === alertId
+        ? { ...alert, status: 'resolved', resolved_by: 'current_user' }
+        : alert
+    )
+  )
+}
+  //........end
+
 
   const filteredAlerts = alerts.filter((alert) => {
     const matchesSearch =
@@ -140,7 +263,9 @@ export default function AlertsPage() {
         (alert.severity === 'critical' || alert.severity === 'emergency')) ||
       (activeTab === 'resolved' && alert.status === 'resolved')
 
-    return matchesSearch && matchesTab
+    const matchesShip = !selectedShip || alert.ship_id === selectedShip.id
+
+    return matchesSearch && matchesTab && matchesShip
   })
 
   const getShipName = (shipId) => {
@@ -162,6 +287,16 @@ export default function AlertsPage() {
     resolved: 'bg-green-100 text-green-800 border-green-200'
   }
 
+  const severityOrder = {
+  emergency: 1,
+  critical: 2,
+  high: 3,
+  medium: 4
+} 
+
+const sortedAlerts = [...alertsData].sort(
+  (a, b) => severityOrder[a.severity] - severityOrder[b.severity]
+)
   return (
     <div className='p-6 bg-gradient-to-br from-slate-50 to-slate-100 min-h-screen'>
       <div className='max-w-7xl mx-auto space-y-6'>
@@ -190,21 +325,44 @@ export default function AlertsPage() {
 
         {/* Search and Filter */}
         <Card>
-          <CardContent className='p-4'>
-            <div className='flex flex-col md:flex-row gap-4'>
-              <div className='relative flex-1'>
-                <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400' />
-                <Input
-                  placeholder='Search alerts...'
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className='pl-10'
-                />
+          <CardContent className='p-1'>
+            <div className='pr-4 pl-4 flex flex-col md:flex-row sm:flex-col md:justify-between gap-2'>
+              <div className='flex flex-col md:flex-row '>
+                <div className='relative flex-1'>
+                  <Search className='absolute left-3 top-4.5 transform -translate-y-1/2 w-4 h-4 text-slate-400' />
+                  <Input
+                    placeholder='Search alerts...'
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className='pl-10 w-80 '
+                  />
+                </div>
               </div>
-              <Button variant='outline' className='flex items-center gap-2'>
-                <Filter className='w-4 h-4' />
-                Filters
-              </Button>
+              <div className='flex  gap-6'>
+                {/* Ship Filter Autocomplete */}
+                <div className='flex items-center'>
+                  <EntityAutocomplete
+                    options={ships}
+                    getOptionLabel={(option) => option.name}
+                    value={selectedShip}
+                    onChange={(_event, newValue) => setSelectedShip(newValue)}
+                    disableClearable={false}
+                    renderInput={(params) => (
+                      <Input
+                        {...params}
+                        placeholder='Filter by ship'
+                        className=' w-4 h-4 pl-4'
+                      />
+                    )}
+                  />
+                </div>
+                <div>
+                  <Button variant='outline' className='flex items-center gap-2'>
+                    <Filter className='w-4 h-4' />
+                    Filters
+                  </Button>
+                </div>
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -282,7 +440,7 @@ export default function AlertsPage() {
 
                         <div className='flex items-center gap-4 text-sm text-slate-500'>
                           <span className='flex items-center gap-1'>
-                            <MapPin className='w-3 h-3' />
+                            <Ship className='w-3 h-3' />
                             {getShipName(alert.ship_id)}
                           </span>
                           {alert.location && (
@@ -297,17 +455,24 @@ export default function AlertsPage() {
                       <div className='flex items-center gap-2'>
                         {alert.status === 'active' && (
                           <>
-                            {/* View button */}
-                            <Button
-                              variant='outline'
-                              size='sm'
+                            {/* video view  */}
+                            <div
+                              className='relative w-48 h-32 cursor-pointer rounded-xl overflow-hidden border shadow-md hover:shadow-lg transition-all duration-300 group'
                               onClick={() => setSelectedAlert(alert)}
-                              // onClick={() => window.open(videoUrl, "")}
-                              className='flex items-center gap-1 text-blue-600 hover:text-blue-700'
                             >
-                              <Play className='w-3 h-3' />
-                              View
-                            </Button>
+                              <video
+                                src='./videos/fire-detect-1.mp4'
+                                className='w-full h-full object-cover'
+                                controls
+                                preload='metadata'
+                              />
+
+                              {/* Dark gradient overlay */}
+                              <div className='absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300'></div>
+
+                              
+                            </div>
+
                             <Button
                               variant='outline'
                               size='sm'
@@ -355,14 +520,15 @@ export default function AlertsPage() {
         open={!!selectedAlert}
         onClose={() => setSelectedAlert(null)}
         maxWidth='xl'
+        className='rounded-xl'
       >
-        <DialogContent className='max-w-8xl bg-gray-200 '>
+        <DialogContent className='max-w-8xl bg-gray-200'>
           <DialogHeader>
             <DialogTitle className='font-bold'>
               {selectedAlert?.title} - Video
             </DialogTitle>
             <button
-              className='absolute top-2 right-3 text-lg bg-red-500 text-white p-1 rounded-full hover:bg-red-600'
+              className='absolute top-2 right-3 w-10 h-8 text-lg bg-red-400 text-white  rounded-xl hover:bg-red-600'
               onClick={() => setSelectedAlert(null)}
             >
               ✕

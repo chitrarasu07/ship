@@ -95,7 +95,7 @@ export const getMenuData = (org) => [
         permissions: ['reference-master']
       },
       {
-        title: 'Camera',
+        title: 'Camera Master',
         path: '/master-data/camera',
         icon: <CameraAltIcon/>,
         permissions: ['camera']
