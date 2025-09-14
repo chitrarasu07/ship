@@ -36,7 +36,7 @@ const start = async () => {
     app.decorate("db", AppDataSource);
     await runInitialSetup(app);
 
-    app.register(require("./src/routes"), {
+    app.register(require("./src/routes"),{
       prefix: "/api",
     });
 

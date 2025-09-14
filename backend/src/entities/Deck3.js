@@ -17,6 +17,7 @@ module.exports = new EntitySchema({
     location: { type: "varchar", nullable: false },
     ip_address: { type: "varchar", nullable: false },
     port: { type: "varchar", nullable: false },
+    stream_url: { type: "varchar", nullable: false },
     description: { type: "varchar", nullable: true },
     status: { type: "char", length: 1 },
     ...commonColumns,
@@ -24,6 +25,12 @@ module.exports = new EntitySchema({
   relations: {
     ...createdByRelation,
     ...organizationRelation,
+    entity:{
+      type: "many-to-one",
+      target: "Entity",
+      joinColumn: { name: "entity_id" },
+      nullable: true,
+    }
   },
   indices: [
     ...commonIndices,
@@ -31,5 +38,6 @@ module.exports = new EntitySchema({
     { name: "IDX_NAME", columns: ["name"] },
     { name: "IDX_IP_ADDRESS", columns: ["ip_address"] },
     { name: "IDX_TYPE", columns: ["type"] },
+    { name: "IDX_ENTITY", columns: ["entity"] },
   ],
 });

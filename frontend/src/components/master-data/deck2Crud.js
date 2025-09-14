@@ -13,6 +13,7 @@ import axios from 'axios'
 import { useSnackbar } from '@/context/StackedSnackbar'
 import { SCBtnLoader, SCErrorSpan } from '@/styled-components/common'
 import { SaveIcon } from 'lucide-react'
+import EntityAutocomplete from '../autocomplete/entityAutocomplete'
 
 export default function Deck2CRUD(props) {
   const [error, setError] = useState('')
@@ -26,7 +27,8 @@ export default function Deck2CRUD(props) {
     type: false,
     location: false,
     ip_address: false,
-    port: false
+    port: false,
+    stream_url: false
   }
 
   const [formData, setFormData] = useState({
@@ -37,7 +39,9 @@ export default function Deck2CRUD(props) {
     location: '',
     ip_address: '',
     port: '',
-    description: ''
+    stream_url: '',
+    description: '',
+    entity: null
   })
 
   const [errorField, setErrorField] = useState(defaultError)
@@ -50,7 +54,7 @@ export default function Deck2CRUD(props) {
         try {
           setDataSaving(true)
           const { data } = await axios.get('/deck2', { params: { id } })
-          const savedData = data?.items && data.items[0]
+          const savedData = data?.deck2 && data.deck2[0]
           if (savedData) {
             setFormData({ ...formData, ...savedData })
           } else {
@@ -73,7 +77,9 @@ export default function Deck2CRUD(props) {
         location: '',
         ip_address: '',
         port: '',
-        description: ''
+        stream_url: '',
+        description: '',
+        entity: null
       })
       setError('')
       setErrorField(defaultError)
@@ -104,7 +110,9 @@ export default function Deck2CRUD(props) {
       type: !formData.type ? 'Type is required' : '',
       location: !formData.location ? 'Location is required' : '',
       ip_address: !formData.ip_address ? 'IP Address is required' : '',
-      port: !formData.port ? 'Port is required' : ''
+      port: !formData.port ? 'Port is required' : '',
+      stream_url: !formData.stream_url ? 'Stream URL is required' : '',
+      entity: !formData.entity ? 'Entity is required' : ''
     })
 
     if (
@@ -113,7 +121,9 @@ export default function Deck2CRUD(props) {
       !formData.type ||
       !formData.location ||
       !formData.ip_address ||
-      !formData.port
+      !formData.port ||
+      !formData.stream_url ||
+      !formData.entity
     )
       return
 
@@ -121,10 +131,15 @@ export default function Deck2CRUD(props) {
     setError('')
 
     try {
+      const temp = {
+        ...formData,
+        // entity: undefined,
+        entity_id: formData.entity?.id
+      }
       if (formData.id) {
-        await axios.put(`/deck2/${id}`, formData)
+        await axios.put(`/deck2/${id}`, temp)
       } else {
-        await axios.post('/deck2', formData)
+        await axios.post('/deck2', temp)
       }
       setDataSaving(false)
       addSnackbar(`Deck2 ${formData.id ? 'updated' : 'created'} successfully`)
@@ -215,6 +230,37 @@ export default function Deck2CRUD(props) {
               required
             />
           </Grid>
+          <Grid item>
+            <TextField
+              label='Stream URL'
+              name='stream_url'
+              value={formData.stream_url}
+              error={!!errorField.stream_url}
+              helperText={errorField.stream_url}
+              onChange={handleChange}
+              fullWidth
+              required
+            />
+          </Grid>
+
+          <Grid item>
+            <EntityAutocomplete
+              value={formData.entity}
+              InputProps={{
+                error: errorField.entity
+              }}
+              AutocompleteProps={{
+                required: true,
+                onChange: (event, value) => {
+                  setFormData({
+                    ...formData,
+                    entity: value
+                  })
+                }
+              }}
+            />
+          </Grid>
+
           <Grid item>
             <TextField
               label='Description'

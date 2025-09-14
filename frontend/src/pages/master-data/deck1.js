@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import EditIcon from '@mui/icons-material/Edit'
 import SearchIcon from '@mui/icons-material/Search'
 import {
   Button,
@@ -37,7 +36,7 @@ export default function Deck1() {
   const { org } = useApp()
   const { addSnackbar } = useSnackbar()
   const [open, setOpen] = useState(false)
-  const [deck1Item, setDeck1Item] = useState(null)
+  const [deck1, setDeck1] = useState(null)
   const [tablePage, setTablePage] = useState(0)
   const [items, setItems] = useState([])
   const [totalRecord, setTotalRecord] = useState(0)
@@ -45,8 +44,8 @@ export default function Deck1() {
   const [searchError, setSearchError] = useState('')
   const [deleteRow, setDeleteRow] = useState(null)
   const [searchData, setSearchData] = useState({
+    code: '',
     name: '',
-    location: '',
     isActive: true,
     entity: null
   })
@@ -59,17 +58,22 @@ export default function Deck1() {
     const { name, value, checked, type } = event.target
     setSearchData({
       ...searchData,
-      [name]: type === 'checkbox' ? checked : value
+      [name]:
+        name === 'code'
+          ? value.toUpperCase()
+          : type === 'checkbox'
+            ? checked
+            : value
     })
   }
 
   const newRecord = () => {
-    setDeck1Item(null)
+    setDeck1(null)
     setOpen(true)
   }
 
   const editRecord = (row) => {
-    setDeck1Item(row)
+    setDeck1(row)
     setOpen(true)
   }
 
@@ -149,12 +153,13 @@ export default function Deck1() {
           <Grid item sm={6} md={3}>
             <TextField
               fullWidth
-              label='Location'
-              name='location'
-              value={searchData.location}
+              label='IP Address'
+              name='ip_address'
+              value={searchData.ip_address}
               onChange={handleSearchChange}
             />
           </Grid>
+
           <Grid item sm={6} md={2}>
             <EntityAutocomplete
               value={searchData.entity}
@@ -179,8 +184,6 @@ export default function Deck1() {
               }
               label='Active Only'
             />
-          </Grid>
-          <Grid item sm={12} md={3} container alignItems='flex-end'>
             <Button
               variant='outlined'
               onClick={() => searchRecords(true)}
@@ -199,13 +202,15 @@ export default function Deck1() {
             </Button>
           </Grid>
         </Grid>
-        {searchError && (
+        {searchError ? (
           <Grid item sm={12} md={4}>
             <SCErrorSpan>{searchError}</SCErrorSpan>
           </Grid>
+        ) : (
+          ''
         )}
       </Box>
-      {!dataLoading && !items.length && !searchError && (
+      {!dataLoading && !items.length && !searchError ? (
         <Typography
           variant='body2'
           color='error'
@@ -214,8 +219,10 @@ export default function Deck1() {
         >
           No record found
         </Typography>
+      ) : (
+        ''
       )}
-      {items.length > 0 && (
+      {items.length ? (
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 650 }} aria-label='deck1 table'>
             <TableHead>
@@ -227,6 +234,7 @@ export default function Deck1() {
                 <TableCell>Type</TableCell>
                 <TableCell>IP Address</TableCell>
                 <TableCell>Port</TableCell>
+                <TableCell>Stream_url</TableCell>
                 <TableCell>{org.entity}</TableCell>
                 <TableCell>Actions</TableCell>
               </TableRow>
@@ -241,6 +249,7 @@ export default function Deck1() {
                   <TableCell>{row.type}</TableCell>
                   <TableCell>{row.ip_address}</TableCell>
                   <TableCell>{row.port}</TableCell>
+                  <TableCell>{row.stream_url}</TableCell>
                   <TableCell>
                     {row.entity && `${row.entity.name} (${row.entity.code})`}
                   </TableCell>
@@ -277,18 +286,22 @@ export default function Deck1() {
             </TableFooter>
           </Table>
         </TableContainer>
+      ) : (
+        ''
       )}
       <Deck1CRUD
         open={open}
         handleClose={handleClose}
-        id={deck1Item?.id}
+        id={deck1?.id}
         onSave={() => searchRecords(true)}
       />
       <Dialog open={Boolean(deleteRow?.id)} onClose={() => setDeleteRow(null)}>
         <DialogTitle>Confirm Deletion</DialogTitle>
         <DialogContent>
           <Typography>
-            Are you sure you want to delete {deleteRow?.name}?
+            Are you sure you want to delete {deleteRow?.name}
+            {''}
+            {org.item}
           </Typography>
         </DialogContent>
         <DialogActions>

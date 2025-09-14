@@ -16,6 +16,7 @@ import {
   Sailing
 } from '@mui/icons-material'
 import CameraAltIcon from '@mui/icons-material/CameraAlt'
+import VideocamIcon from '@mui/icons-material/Videocam';
 
 
 export const getMenuData = (org) => [
@@ -27,6 +28,12 @@ export const getMenuData = (org) => [
     style:{
       MarginTop: '15px'
     }
+  },
+  {
+    title:'Live Feeds',
+    path: '/liveFeeds',
+    icon: <VideocamIcon />,
+    permissions: ['livefeeds']
   },
   {
     title: 'Ships',

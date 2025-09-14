@@ -262,7 +262,7 @@ export default function Entity() {
                 <TableCell>SN.No</TableCell>
                 <TableCell>Code</TableCell>
                 <TableCell>Name</TableCell>
-                <TableCell>Status</TableCell>
+                {/* <TableCell>Status</TableCell> */}
                 <TableCell>IMO Number</TableCell>
                 <TableCell>Flag</TableCell>
                 <TableCell>Cameras Installed</TableCell>
@@ -283,7 +283,7 @@ export default function Entity() {
                   </TableCell>
                   <TableCell>{row.code}</TableCell>
                   <TableCell>{row.name}</TableCell>
-                  <TableCell>{row.status}</TableCell>
+                  {/* <TableCell>{row.status}</TableCell> */}
                   <TableCell>{row.imo_number}</TableCell>
                   <TableCell>{row.flag}</TableCell>
                   <TableCell>{row.cameras_installed}</TableCell>

@@ -17,6 +17,7 @@ module.exports = new EntitySchema({
     location: { type: "varchar", nullable: false },
     ip_address: { type: "varchar", nullable: false },
     port: { type: "varchar", nullable: false },
+    stream_url: { type: "varchar", nullable: true },
     description: { type: "varchar", nullable: true },
     status: { type: "char", length: 1 },
     ...commonColumns,

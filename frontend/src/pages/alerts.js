@@ -340,7 +340,7 @@ const sortedAlerts = [...alertsData].sort(
               </div>
               <div className='flex  gap-6'>
                 {/* Ship Filter Autocomplete */}
-                <div className='flex items-center'>
+                {/* <div className='flex items-center'>
                   <EntityAutocomplete
                     options={ships}
                     getOptionLabel={(option) => option.name}
@@ -355,7 +355,7 @@ const sortedAlerts = [...alertsData].sort(
                       />
                     )}
                   />
-                </div>
+                </div> */}
                 <div>
                   <Button variant='outline' className='flex items-center gap-2'>
                     <Filter className='w-4 h-4' />

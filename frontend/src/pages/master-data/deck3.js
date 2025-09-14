@@ -30,13 +30,14 @@ import { SCBtnLoader, SCErrorSpan } from '@/styled-components/common'
 import { Delete, Edit } from '@mui/icons-material'
 import { useSnackbar } from '@/context/StackedSnackbar'
 import { useApp } from '@/context/AppContext'
+import EntityAutocomplete from '@/components/autocomplete/entityAutocomplete'
 
 export default function Deck3() {
   const rowsPerPage = 10
   const { org } = useApp()
   const { addSnackbar } = useSnackbar()
   const [open, setOpen] = useState(false)
-  const [deck3Item, setDeck3Item] = useState(null)
+  const [deck3, setDeck3] = useState(null)
   const [tablePage, setTablePage] = useState(0)
   const [items, setItems] = useState([])
   const [totalRecord, setTotalRecord] = useState(0)
@@ -62,12 +63,12 @@ export default function Deck3() {
   }
 
   const newRecord = () => {
-    setDeck3Item(null)
+    setDeck3(null)
     setOpen(true)
   }
 
   const editRecord = (row) => {
-    setDeck3Item(row)
+    setDeck3(row)
     setOpen(true)
   }
 
@@ -86,11 +87,12 @@ export default function Deck3() {
           ...searchData,
           getCount,
           pageNo: pageNo + 1,
-          limit: rowsPerPage
+          limit: rowsPerPage,
+          entity_id: searchData.entity?.id
         }
       })
       setDataLoading(false)
-      setItems(res?.data?.items || [])
+      setItems(res?.data?.deck3 || [])
       getCount && setTotalRecord(res?.data?.total || 0)
     } catch (error) {
       setDataLoading(false)
@@ -146,10 +148,24 @@ export default function Deck3() {
           <Grid item sm={6} md={3}>
             <TextField
               fullWidth
-              label='Location'
-              name='location'
-              value={searchData.location}
+              label='IP Address'
+              name='ip_address'
+              value={searchData.ip_address}
               onChange={handleSearchChange}
+            />
+          </Grid>
+
+          <Grid item sm={6} md={2}>
+            <EntityAutocomplete
+              value={searchData.entity}
+              AutocompleteProps={{
+                onChange: (event, value) => {
+                  setSearchData({
+                    ...searchData,
+                    entity: value
+                  })
+                }
+              }}
             />
           </Grid>
           <Grid item sm={6} md={3}>
@@ -211,6 +227,8 @@ export default function Deck3() {
                 <TableCell>Type</TableCell>
                 <TableCell>IP Address</TableCell>
                 <TableCell>Port</TableCell>
+                <TableCell>Stream URL</TableCell>
+                <TableCell>{org.entity}</TableCell>
                 <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
@@ -224,6 +242,10 @@ export default function Deck3() {
                   <TableCell>{row.type}</TableCell>
                   <TableCell>{row.ip_address}</TableCell>
                   <TableCell>{row.port}</TableCell>
+                  <TableCell>{row.stream_url}</TableCell>
+                  <TableCell>
+                    {row.entity && `${row.entity.name} (${row.entity.code})`}
+                  </TableCell>
                   <TableCell>
                     <Button
                       onClick={() => editRecord(row)}
@@ -261,7 +283,7 @@ export default function Deck3() {
       <Deck3CRUD
         open={open}
         handleClose={handleClose}
-        id={deck3Item?.id}
+        id={deck3?.id}
         onSave={() => searchRecords(true)}
       />
       <Dialog open={Boolean(deleteRow?.id)} onClose={() => setDeleteRow(null)}>

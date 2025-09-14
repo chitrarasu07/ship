@@ -4,10 +4,20 @@ module.exports = async function (app) {
   const repo = app.db.getRepository("Deck3");
 
   // GET /deck3
-  app.get("/deck3  ", async (req, res) => {
+  app.get("/deck3", async (req, res) => {
     try {
-      const { id, code, name, type, ip_address, port, isActive, getCount } =
-        req.query;
+      const {
+        id,
+        code,
+        name,
+        type,
+        ip_address,
+        port,
+        stream_url,
+        isActive,
+        getCount,
+        entity_id,
+      } = req.query;
 
       const qb = repo.createQueryBuilder("deck3");
       const dataToSend = {};
@@ -21,6 +31,10 @@ module.exports = async function (app) {
         "deck3.status",
         "deck3.ip_address",
         "deck3.port",
+        "deck3.stream_url",
+        "entity.id",
+        "entity.code",
+        "entity.name",
       ]);
 
       qb.where("deck3.org_id = :orgId", { orgId: req.user.orgId });
@@ -41,6 +55,16 @@ module.exports = async function (app) {
       if (ip_address)
         qb.andWhere("deck3.ip_address = :ip_address", { ip_address });
       if (port) qb.andWhere("deck3.port = :port", { port });
+      if (stream_url)
+        qb.andWhere("LOWER(deck3.stream_url) LIKE LOWER(:stream_url)", {
+          stream_url: `%${stream_url.toLowerCase()}%`,
+        });
+
+      if (entity_id) {
+        qb.andWhere("deck3.entity_id = :entityId", {
+          entityId: entity_id,
+        });
+      }
 
       if (isActive === "false") {
         qb.andWhere("deck3.status IN (:...status)", { status: ["A", "D"] });
@@ -54,14 +78,14 @@ module.exports = async function (app) {
         const count = await qb.clone().getCount();
         dataToSend.total = count;
       }
-
+      qb.leftJoin("deck3.entity", "entity");
       const page = parseInt(req.query.pageNo) || 1;
       const limit = parseInt(req.query.limit) || 10;
       const offset = (page - 1) * limit;
 
       const results = await qb.skip(offset).take(limit).getMany();
       dataToSend.deck3 = results;
-
+      // console.log("DB query", qb.getSql(), req.user.orgId);
       return res.send(dataToSend);
     } catch (err) {
       app.log.error(err);
@@ -79,12 +103,13 @@ module.exports = async function (app) {
         { f: "location", t: "string" },
         { f: "ip_address", t: "string" },
         { f: "port", t: "string" },
+        { f: "stream_url", t: "string" },
       ])
     )
       return;
 
     try {
-      const { code, name, type, location, ip_address, port, description } =
+      const { code, name, type, location, ip_address, port, description, entity_id, stream_url } =
         req.body;
 
       const existing = await repo.findOne({
@@ -97,7 +122,7 @@ module.exports = async function (app) {
 
       if (existing) {
         return res.code(500).send({
-          error: `Deck2 with code "${code}" already exists.`,
+          error: `Deck3 with code "${code}" already exists.`,
         });
       }
 
@@ -108,6 +133,8 @@ module.exports = async function (app) {
         location,
         ip_address,
         port,
+        stream_url,
+        entity: { id: entity_id },
         description,
         status: "A",
         created_by: { id: req.user.id },
@@ -123,6 +150,8 @@ module.exports = async function (app) {
         location,
         ip_address,
         port,
+        stream_url,
+        entity: { id: entity_id },
         description,
       });
 
@@ -143,18 +172,20 @@ module.exports = async function (app) {
         { f: "location", t: "string" },
         { f: "ip_address", t: "string" },
         { f: "port", t: "string" },
+        { f: "stream_url", t: "string" },
+        { f: "entity_id", t: "number" },
       ])
     )
       return;
 
     const { id } = req.params;
-    const { code, name, type, location, ip_address, port, description } =
+    const { code, name, type, location, ip_address, port, description, entity_id, stream_url } =
       req.body;
 
     try {
       await repo.update(
         { id },
-        { code, name, type, location, ip_address, port, description }
+        { code, name, type, location, ip_address, port, description, entity: { id: entity_id }, stream_url }
       );
 
       await app.logAudit(req, id, "deck3", "update", {
@@ -164,6 +195,8 @@ module.exports = async function (app) {
         location,
         ip_address,
         port,
+        stream_url,
+        entity_id,
         description,
       });
 

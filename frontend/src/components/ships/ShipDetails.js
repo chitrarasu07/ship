@@ -15,7 +15,7 @@ import {
   FileText
 } from 'lucide-react'
 import { format } from 'date-fns'
-import RecentAlerts from '../dashboard/RecentAlerts'
+
 
 const DetailItem = ({ icon: Icon, label, value }) => (
   <div className='flex items-start gap-4 p-4 bg-slate-100/50 rounded-lg'>

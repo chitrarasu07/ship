@@ -6,7 +6,8 @@ import {
   DialogActions,
   TextField,
   Button,
-  Grid
+  Grid,
+  Box
 } from '@mui/material'
 import CloseIcon from '@mui/icons-material/Close'
 import axios from 'axios'
@@ -24,10 +25,8 @@ export default function Deck1CRUD(props) {
   const defaultError = {
     code: false,
     name: false,
-    type: false,
-    location: false,
     ip_address: false,
-    port: false
+    stream_url: false
   }
 
   const [formData, setFormData] = useState({
@@ -38,6 +37,7 @@ export default function Deck1CRUD(props) {
     location: '',
     ip_address: '',
     port: '',
+    stream_url: '',
     description: '',
     entity: null
   })
@@ -61,9 +61,12 @@ export default function Deck1CRUD(props) {
           console.log(data)
         } catch (error) {
           console.error(error)
-          setError('Failed to load Deck1 data')
-        } 
+          setError(error.response?.data?.error || error.response?.statusText)
+        } finally {
+          setDataSaving(false)
+        }
       }
+
       fetchRecordById()
     } else {
       setFormData({
@@ -74,13 +77,15 @@ export default function Deck1CRUD(props) {
         location: '',
         ip_address: '',
         port: '',
+        stream_url: '',
         description: '',
         entity: null
       })
+    }
       setError('')
       setErrorField(defaultError)
       setDataSaving(false)
-    }
+    
   }, [open])
 
   const handleChange = (event) => {
@@ -95,6 +100,12 @@ export default function Deck1CRUD(props) {
       [name]: !value
     })
   }
+  const validateField = (name, value) => {
+    setErrorField((prevData) => ({
+      ...prevData,
+      [name]: !value
+    }))
+  }
 
   const handleSubmit = async () => {
     formData.code = formData.code.trim()
@@ -103,20 +114,22 @@ export default function Deck1CRUD(props) {
     setErrorField({
       code: !formData.code ? 'Code is required' : '',
       name: !formData.name ? 'Name is required' : '',
-      type: !formData.type ? 'Type is required' : '',
-      location: !formData.location ? 'Location is required' : '',
+      // type: !formData.type ? 'Type is required' : '',
+      // location: !formData.location ? 'Location is required' : '',
       ip_address: !formData.ip_address ? 'IP Address is required' : '',
-      port: !formData.port ? 'Port is required' : '',
+      // port: !formData.port ? 'Port is required' : '',
+      stream_url: !formData.stream_url ? 'Stream URL is required' : '',
       entity: !formData.entity ? 'Entity is required' : ''
     })
 
     if (
       !formData.code ||
       !formData.name ||
-      !formData.type ||
-      !formData.location ||
+      // !formData.type ||
+      // !formData.location ||
       !formData.ip_address ||
-      !formData.port ||
+      // !formData.port ||
+      !formData.stream_url ||
       !formData.entity?.id
     )
       return
@@ -144,19 +157,20 @@ export default function Deck1CRUD(props) {
       console.error(err)
     }
   }
-  const validateField = (name, value) => {
-    setErrorField((prevData) => ({
-      ...prevData,
-      [name]: !value
-    }))
-  }
 
   return (
     <Dialog open={open} onClose={handleClose} maxWidth='sm' fullWidth>
       <DialogTitle>{id ? 'Edit Deck1' : 'New Deck1'}</DialogTitle>
       <DialogContent dividers>
-        <Grid container spacing={2} sx={{ flexDirection: 'column' }}>
-          <Grid item>
+         <Box
+                  component='form'
+                  width='500px'
+                  sx={{
+                    '& .MuiTextField-root': { m: 1 }
+                  }}
+                  noValidate
+                  autoComplete='off'
+                >
             <TextField
               label='Code'
               name='code'
@@ -168,8 +182,6 @@ export default function Deck1CRUD(props) {
               fullWidth
               required
             />
-          </Grid>
-          <Grid item>
             <TextField
               label='Name'
               name='name'
@@ -180,8 +192,6 @@ export default function Deck1CRUD(props) {
               fullWidth
               required
             />
-          </Grid>
-          <Grid item>
             <TextField
               label='Type'
               name='type'
@@ -190,10 +200,8 @@ export default function Deck1CRUD(props) {
               helperText={errorField.type}
               onChange={handleChange}
               fullWidth
-              required
+          
             />
-          </Grid>
-          <Grid item>
             <TextField
               label='Location'
               name='location'
@@ -202,10 +210,8 @@ export default function Deck1CRUD(props) {
               helperText={errorField.location}
               onChange={handleChange}
               fullWidth
-              required
+              
             />
-          </Grid>
-          <Grid item>
             <TextField
               label='IP Address'
               name='ip_address'
@@ -216,8 +222,6 @@ export default function Deck1CRUD(props) {
               fullWidth
               required
             />
-          </Grid>
-          <Grid item>
             <TextField
               label='Port'
               name='port'
@@ -226,28 +230,34 @@ export default function Deck1CRUD(props) {
               helperText={errorField.port}
               onChange={handleChange}
               fullWidth
+            
+            />
+            <TextField
+              label='Stream URL'
+              name='stream_url'
+              value={formData.stream_url}
+              error={!!errorField.stream_url}
+              helperText={errorField.stream_url}
+              onChange={handleChange}
+              fullWidth
               required
             />
-          </Grid>
-          <Grid item >
             <EntityAutocomplete
-                        value={formData.entity}
-                        InputProps={{
-                          error: errorField.entity
-                        }}
-                        AutocompleteProps={{
-                          required: true,
-                          onChange: (event, value) => {
-                            setFormData({
-                              ...formData,
-                              entity: value
-                            })
-                            validateField('entity', value)
-                          }
-                        }}
-                      />
-          </Grid>
-          <Grid item>
+              value={formData.entity}
+              InputProps={{
+                error: errorField.entity
+              }}
+              AutocompleteProps={{
+                required: true,
+                onChange: (event, value) => {
+                  setFormData({
+                    ...formData,
+                    entity: value
+                  })
+                  validateField('entity', value)
+                }
+              }}
+            />
             <TextField
               label='Description'
               name='description'
@@ -257,17 +267,16 @@ export default function Deck1CRUD(props) {
               onChange={handleChange}
               fullWidth
             />
-          </Grid>
-        </Grid>
-        {error && <SCErrorSpan>{error}</SCErrorSpan>}
+        </Box>
       </DialogContent>
       <DialogActions sx={{ pb: 2, pr: 3 }}>
+        {error && <SCErrorSpan>{error}</SCErrorSpan>}
         <Button
           onClick={handleClose}
           variant='outlined'
           startIcon={<CloseIcon />}
         >
-          Cancel
+          Close
         </Button>
 
         <Button

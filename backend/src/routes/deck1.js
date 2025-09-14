@@ -6,7 +6,7 @@ module.exports = async function (app) {
   // GET /deck1
   app.get("/deck1", async (req, res) => {
     try {
-      const { id, code, name, type, ip_address, port, isActive, getCount , entity_id} =
+      const { id, code, name, type, ip_address, port, stream_url, isActive, getCount , entity_id} =
         req.query;
 
       const qb = repo.createQueryBuilder("deck1");
@@ -21,6 +21,7 @@ module.exports = async function (app) {
         "deck1.status",
         "deck1.ip_address",
         "deck1.port",
+        "deck1.stream_url",
         "entity.id",
         "entity.code",
         "entity.name",  
@@ -31,7 +32,7 @@ module.exports = async function (app) {
       if (id) qb.andWhere("deck1.id = :id", { id });
       if (code)
         qb.andWhere("LOWER(deck1.code) LIKE LOWER(:code)", {
-          code: `%${code}%`,
+          code: `%${code.toLowerCase()}%`,
         });
       if (name)
         qb.andWhere("LOWER(deck1.name) LIKE LOWER(:name)", {
@@ -44,6 +45,10 @@ module.exports = async function (app) {
       if (ip_address)
         qb.andWhere("deck1.ip_address = :ip_address", { ip_address });
       if (port) qb.andWhere("deck1.port = :port", { port });
+      if (stream_url)
+        qb.andWhere("LOWER(deck1.stream_url) LIKE LOWER(:stream_url)", {
+          stream_url: `%${stream_url.toLowerCase()}%`,
+        });
 
       if (entity_id) {
         qb.andWhere("deck1.entity_id = :entityId", {
@@ -84,17 +89,14 @@ module.exports = async function (app) {
       !validateRequiredFields(req, res, [
         { f: "code", t: "string" },
         { f: "name", t: "string" },
-        { f: "type", t: "string" },
-        { f: "location", t: "string" },
         { f: "ip_address", t: "string" },
-        { f: "port", t: "string" },
-        { f: "entity_id", t: "number" },
+        { f: "stream_url", t: "string" },
       ])
     )
       return;
 
     try {
-      const { code, name, type, location, ip_address, port, description , entity_id } =
+      const { code, name, type, location, ip_address, port, stream_url, description , entity_id } =
         req.body;
 
       const existing = await repo.findOne({
@@ -118,6 +120,7 @@ module.exports = async function (app) {
         location,
         ip_address,
         port,
+        stream_url,
         description,
         status: "A",
         created_by: { id: req.user.id },
@@ -134,6 +137,7 @@ module.exports = async function (app) {
         location,
         ip_address,
         port,
+        stream_url,
         entity_id,
         description,
       });
@@ -142,6 +146,7 @@ module.exports = async function (app) {
     } catch (err) {
       app.log.error(err);
       res.code(500).send({ error: "Internal error" });
+      console.log(err);
     }
   });
 
@@ -151,23 +156,21 @@ module.exports = async function (app) {
       !validateRequiredFields(req, res, [
         { f: "code", t: "string" },
         { f: "name", t: "string" },
-        { f: "type", t: "string" },
-        { f: "location", t: "string" },
         { f: "ip_address", t: "string" },
-        { f: "port", t: "string" },
+        { f: "stream_url", t: "string" },
         { f: "entity_id", t: "number" },
       ])
     )
       return;
 
     const { id } = req.params;
-    const { code, name, type, location, ip_address, port, description, entity_id } =
+    const { code, name, type, location, ip_address, port, stream_url, entity_id, description } =
       req.body;
 
     try {
       await repo.update(
         { id },
-        { code, name, type, location, ip_address, port, description , entity: { id: entity_id } }
+        { code, name, type, location, ip_address, port, stream_url, entity: { id: entity_id }, description }
       );
 
       await app.logAudit(req, id, "deck1", "update", {
@@ -177,6 +180,7 @@ module.exports = async function (app) {
         location,
         ip_address,
         port,
+        stream_url,
         description,
         entity_id,
       });
